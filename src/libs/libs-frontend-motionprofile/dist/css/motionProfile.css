@@ -29,13 +29,9 @@
 .cosmatt-motionProfile .profileButton {
   margin-right: 10px;
 }
-.cosmatt-motionProfile #graphContainer {
-  display: flex;
-  justify-content: space-between;
-}
 .cosmatt-motionProfile #graphContainer .graphArea {
-  height: 26vw;
-  width: 26vw;
+  height: 400px;
+  min-width: 10px;
   display: inline-block;
   padding: 0px 5px !important;
 }
