@@ -743,10 +743,11 @@ COSMATT.MotionProfile.configuration = {
     }
 
     var settings = $.extend(defaults, options);
+    settings.graphModeVal = settings.graphMode;
     var $container = this;
     var $widgetContainer = $('<div class="cosmatt-motionProfile unselectable" unselectable="on"></div>');
     $container.append($widgetContainer);
-    $widgetContainer.append('<div id="profileButtons"><button class="btn btn-default profileButton" id="btn1">Profile 1</button><button class="btn btn-default profileButton" id="btn2">Profile 2</button><button class="btn btn-default profileButton" id="btn3">Profile 3</button></div><div id="graphContainer"></div><div id="inputControls"></div>');
+    $widgetContainer.append('<div id="profileButtons"><button class="btn btn-default profileButton" id="btn1">Profile 1</button><button class="btn btn-default profileButton" id="btn2">Profile 2</button><button class="btn btn-default profileButton" id="btn3">Profile 3</button></div><div id="graphContainer" class=""></div><div id="inputControls"></div>');
     if (options.assessmentMode) {
       $widgetContainer.addClass("assessment-mode");
     }
@@ -1057,13 +1058,62 @@ COSMATT.MotionProfile.configuration = {
     };
 
     var plotGraph = function(segmentData) {
+      //append graphs to dom
+
+      attachResizeToPlots(segmentData);
+    };
+
+    var attachResizeToPlots = function(segmentData) {
+      var $graphContainer = $widgetContainer.find("#graphContainer");
+      var triggerResize = true;
+      var resetPlots = function() {
+        if (posPlot) posPlot = posPlot.destroy();
+        if (velPlot) velPlot = velPlot.destroy();
+        if (accPlot) accPlot = accPlot.destroy();
+        if (jerkPlot) jerkPlot = jerkPlot.destroy();
+        if (aioPlot) aioPlot = aioPlot.destroy();
+        $graphContainer.find('.graphArea').remove();
+        if (segmentData) {
+          plottingGraph($graphContainer, segmentData);
+          triggerResize = false;
+        } else {
+          plotEmptyGraph();
+          triggerResize = false;
+        }
+      }
+
+      $graphContainer.resize(function(e) {
+        var ele = $(e.target);
+        if (ele[0].id === "graphContainer") {
+          if (ele.width() < 777 && settings.showGraphs.length > 1 && settings.graphModeVal === 0 && settings.graphMode === 0) {
+            settings.graphMode = 1;
+            resetPlots();
+          } else if (ele.width() > 777 && settings.showGraphs.length > 1 && settings.graphModeVal === 0 && settings.graphMode === 1) {
+            settings.graphMode = 0;
+            resetPlots();
+          } else if (triggerResize) {
+            triggerResize = false;
+            if (segmentData) {
+              plottingGraph($graphContainer, segmentData);
+            } else {
+              plotEmptyGraph();
+            }
+          }
+        } else if (ele.hasClass('graphArea')) {
+          ele.height(ele.width());
+        }
+      });
+      $graphContainer.trigger("resize");
+    }
+
+    var plottingGraph = function($graphContainer, segmentData) {
       var posMax = getHighestPoint(segmentData, "position_final", posYMax);
       var velMax = getHighestPoint(segmentData, "velocity_final", velYMax);
       var accMax = getHighestPoint(segmentData, "acceleration_final", accYMax);
       var timeMax = getHighestPoint(segmentData, "time_final", xmin);
       var jerkMax = getHighestPoint(segmentData, "jerk", jerkYMax);
-      //append graphs to dom
-      var $graphContainer = $widgetContainer.find("#graphContainer");
+      var triggerResize = true;
+
       if ($graphContainer.children().length === 0) {
         if (settings.graphMode === 0) {
           for (var i = 0; i < settings.showGraphs.length; i++) {
@@ -1075,7 +1125,21 @@ COSMATT.MotionProfile.configuration = {
         }
       }
       // $graphContainer.find('.graphArea').css("min-width", (100 / $graphContainer.children().length) + "%");
-      $graphContainer.find('.graphArea').addClass("col-xs-" + 12 / $graphContainer.children().length + " col-" + 12 / $graphContainer.children().length);
+      // $graphContainer.find('.graphArea').addClass("col-xs-" + 12 / $graphContainer.children().length + " col-" + 12 / $graphContainer.children().length);
+      var $graphArea = $graphContainer.find('.graphArea');
+      $graphArea.css({
+        "width": 100 / $graphContainer.children().length + "%",
+        "max-height": "400px",
+        "min-height": "250px",
+        "min-width": "250px"
+      });
+      $graphArea.css("height", $graphArea.eq(0).width());
+
+      if (settings.graphMode === 1 && settings.graphModeVal === 0) {
+        $graphArea.css("max-height", "300px");
+      } else if (settings.graphMode === 0 && settings.graphModeVal === 0) {
+        $graphArea.css("max-height", "400px");
+      }
 
       var $posGraph = $graphContainer.find("#posGraph");
       var $velGraph = $graphContainer.find("#velGraph");
@@ -1083,8 +1147,17 @@ COSMATT.MotionProfile.configuration = {
       var $jerkGraph = $graphContainer.find("#jerkGraph");
       var $aioGraph = $graphContainer.find("#aioGraph");
 
+      var dataSetKeys = Object.keys(dataSet);
+      var pointsDataSetKeys = Object.keys(pointsDataSet);
+      for (var i = 0; i < dataSetKeys.length; i++) {
+        delete dataSet[dataSetKeys[i]].yaxis;
+      }
+      for (var i = 0; i < pointsDataSetKeys.length; i++) {
+        delete pointsDataSet[pointsDataSetKeys[i]].yaxis;
+      }
+
       if ($posGraph.length > 0) {
-        posPlot = $.plot($posGraph, [dataSet.pos, pointsDataSet.pos], $.extend(true, {
+        var posPlotOptions = $.extend(true, {
           yaxis: {
             min: -1 * posMax,
             max: posMax,
@@ -1104,11 +1177,14 @@ COSMATT.MotionProfile.configuration = {
             min: 0,
             max: timeMax
           }
-        }, chartOptions));
+        }, chartOptions);
+        // console.log(posPlotOptions);
+        posPlot = $.plot($posGraph, [dataSet.pos, pointsDataSet.pos], posPlotOptions);
         addDragDropFunctionalityPostion(posPlot);
       }
       if ($velGraph.length > 0) {
-        velPlot = $.plot($velGraph, [dataSet.vel, pointsDataSet.vel, pointsDataSet.dwell, pointsDataSet.movetime], $.extend(true, {
+
+        var velPlotOptions = $.extend(true, {
           yaxis: {
             min: -1 * velMax,
             max: velMax,
@@ -1128,11 +1204,14 @@ COSMATT.MotionProfile.configuration = {
             min: 0,
             max: timeMax
           }
-        }, chartOptions));
+        }, chartOptions);
+        // console.log(velPlotOptions);
+        velPlot = $.plot($velGraph, [dataSet.vel, pointsDataSet.vel, pointsDataSet.dwell, pointsDataSet.movetime], velPlotOptions);
         addDragDropFunctionality(velPlot);
       }
       if ($accGraph.length > 0) {
-        accPlot = $.plot($accGraph, [dataSet.acc], $.extend(true, {
+
+        var accPlotOptions = $.extend(true, {
           yaxis: {
             min: -1 * accMax,
             max: accMax,
@@ -1152,30 +1231,36 @@ COSMATT.MotionProfile.configuration = {
             min: 0,
             max: timeMax
           }
-        }, chartOptions));
+        }, chartOptions);
+        // console.log(accPlotOptions);
+        accPlot = $.plot($accGraph, [dataSet.acc], accPlotOptions);
       }
 
       if ($jerkGraph.length > 0) {
-        jerkPlot = $.plot($jerkGraph, [dataSet.jerk], $.extend(true, {
-          yaxis: {
-            min: -1 * jerkMax,
-            max: jerkMax,
-            position: "left",
-            axisLabel: "Jerk (rad/sec^3)",
-            tickFormatter: function(val, axis) {
-              var valStr = val.toString();
-              if ((valStr.length > 5 && valStr[0] == "-") || (valStr.length > 4 && valStr[0] != "-")) {
-                return val.toExponential(1);
+        setTimeout(function() {
+          var jerkPlotOptions = $.extend(true, {
+            yaxis: {
+              min: -1 * jerkMax,
+              max: jerkMax,
+              position: "left",
+              axisLabel: "Jerk (rad/sec^3)",
+              tickFormatter: function(val, axis) {
+                var valStr = val.toString();
+                if ((valStr.length > 5 && valStr[0] == "-") || (valStr.length > 4 && valStr[0] != "-")) {
+                  return val.toExponential(1);
+                }
+                return val;
               }
-              return val;
+            },
+            xaxis: {
+              min: 0,
+              max: timeMax
             }
-          },
-          xaxis: {
-            min: 0,
-            max: timeMax
-          }
-        }, chartOptions));
-        addDragDropFunctionalityPostion(posPlot);
+          }, chartOptions);
+          // console.log(jerkPlotOptions);
+          jerkPlot = $.plot($jerkGraph, [dataSet.jerk], jerkPlotOptions);
+          addDragDropFunctionalityPostion(posPlot);
+        }, 4000);
       }
 
       if ($aioGraph.length > 0) {
@@ -1183,7 +1268,7 @@ COSMATT.MotionProfile.configuration = {
           'pos': {
             position: "left",
             axisLabel: "Position (rad)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1193,7 +1278,7 @@ COSMATT.MotionProfile.configuration = {
           'vel': {
             position: "left",
             axisLabel: "Velocity (rad/sec)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1203,7 +1288,7 @@ COSMATT.MotionProfile.configuration = {
           'acc': {
             position: "left",
             axisLabel: "Acceleration (rad/sec^2)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1213,7 +1298,7 @@ COSMATT.MotionProfile.configuration = {
           'jerk': {
             position: "left",
             axisLabel: "Jerk (rad/sec^3)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1242,7 +1327,7 @@ COSMATT.MotionProfile.configuration = {
           "show": true,
           "backgroundOpacity": 0
         };
-
+        // console.log(aioOptions);
         aioPlot = $.plot($aioGraph, getAioGraphPoints(), aioOptions);
         addDragDropFunctionalityAIO(aioPlot);
       }
@@ -1270,7 +1355,33 @@ COSMATT.MotionProfile.configuration = {
         }
       }
       // $graphContainer.find('.graphArea').css("min-width", (100 / $graphContainer.children().length) + "%");
-      $graphContainer.find('.graphArea').addClass("col-xs-" + 12 / $graphContainer.children().length + " col-" + 12 / $graphContainer.children().length);
+      // $graphContainer.find('.graphArea').addClass("col-xs-" + 12 / $graphContainer.children().length + " col-" + 12 / $graphContainer.children().length);
+
+
+      var $graphArea = $graphContainer.find('.graphArea');
+      $graphArea.css({
+        "width": 100 / $graphContainer.children().length + "%",
+        "max-height": "400px",
+        "min-height": "250px",
+        "min-width": "250px"
+      });
+      $graphArea.css("height", $graphArea.eq(0).width());
+
+      if (settings.graphMode === 1 && settings.graphModeVal === 0) {
+        $graphArea.css("max-height", "300px");
+      } else if (settings.graphMode === 0 && settings.graphModeVal === 0) {
+        $graphArea.css("max-height", "400px");
+      }
+
+      var dataSetKeys = Object.keys(dataSet);
+      var pointsDataSetKeys = Object.keys(pointsDataSet);
+      for (var i = 0; i < dataSetKeys.length; i++) {
+        delete dataSet[dataSetKeys[i]].yaxis;
+      }
+      for (var i = 0; i < pointsDataSetKeys.length; i++) {
+        delete pointsDataSet[pointsDataSetKeys[i]].yaxis;
+      }
+
       var $posGraph = $graphContainer.find("#posGraph");
       var $velGraph = $graphContainer.find("#velGraph");
       var $accGraph = $graphContainer.find("#accGraph");
@@ -1343,7 +1454,7 @@ COSMATT.MotionProfile.configuration = {
           'pos': {
             position: "left",
             axisLabel: "Position (rad)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1353,7 +1464,7 @@ COSMATT.MotionProfile.configuration = {
           'vel': {
             position: "left",
             axisLabel: "Velocity (rad/sec)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1363,7 +1474,7 @@ COSMATT.MotionProfile.configuration = {
           'acc': {
             position: "left",
             axisLabel: "Acceleration (rad/sec^2)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1373,7 +1484,7 @@ COSMATT.MotionProfile.configuration = {
           'jerk': {
             position: "left",
             axisLabel: "Jerk (rad/sec^3)",
-            axisLabelUseCanvas: true,
+            // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
             axisLabelPadding: 3,
@@ -1563,7 +1674,7 @@ COSMATT.MotionProfile.configuration = {
         // var a3 = profileElements.decel[0].rms_acceleration;
         // var a4 = 0; // dwell time
 
-        // console.log(a1, a2, a3, a4);
+        // // console.log(a1, a2, a3, a4);
 
         // rmsVel = Math.sqrt(Math.pow(profileElements.accel[0].rms_velocity, 2) + Math.pow(profileElements.cruise[0].rms_velocity, 2) + Math.pow(profileElements.decel[0].rms_velocity, 2));
         // rmsAcc = Math.sqrt(((Math.pow(a1, 2) * t1) + (Math.pow(a2, 2) * t2) + (Math.pow(a3, 2) * t3) + (Math.pow(a4, 2) * t4)) / (t1 + t2 + t3 + t4));
@@ -2034,6 +2145,7 @@ COSMATT.MotionProfile.configuration = {
       which is then being rendered to create the appearance of being "between" two pixels.
       So width of yaxis label is converted to nearest next even number.
       */
+      // console.log("updateYaxisLabelCSS....")
       if (posPlot) {
         var $ylabel = $container.find("#posGraph .yaxisLabel");
         var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
@@ -2063,11 +2175,16 @@ COSMATT.MotionProfile.configuration = {
         $ylabel.css('top', '-3%');
       }
       if (aioPlot) {
-        var $ylabel = $container.find("#aioGraph .yaxisLabel");
-        var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-        if (width % 2 != 0) width++;
-        $ylabel.width(width);
-        $ylabel.css('top', '-3%');
+        var $ylabels = $container.find("#aioGraph .axisLabels");
+        for (var i = 0; i < $ylabels.length; i++) {
+          var $ylabel = $($ylabels[i]);
+          if (!$ylabel.hasClass('xaxisLabel')) {
+            var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
+            if (width % 2 != 0) width++;
+            $ylabel.width(width);
+            $ylabel.css('top', '-3%');
+          }
+        }
       }
     };
 
@@ -2462,6 +2579,7 @@ COSMATT.MotionProfile.configuration = {
         resetCalculatedValues();
         setTimeout(function(dataonly) {
           plotEmptyGraph();
+          attachResizeToPlots(false);
         }, 0);
       }
       updateYaxisLabelCSS();
