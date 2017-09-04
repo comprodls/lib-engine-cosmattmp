@@ -2256,7 +2256,7 @@ COSMATT.MotionProfile.configuration = {
 
     var generateInputControls = function() {
       var $inputControls = $widgetContainer.find("#inputControls");
-      $inputControls.append('<form class="row form-horizontal"><div class="col-6 col-xs-6 input-entries inputs"><div class="row form-group" id="moveDistanceInputContainer"><label for="moveDistance" class="col-4 col-xs-4 control-label">Move Distance</label><div class="col-8 col-xs-8 comboMoveDistance"></div></div><div class="row form-group" id="moveTimeInputContainer"><label for="moveTime" class="col-4 col-xs-4 control-label">Move Time</label><div class="col-8 col-xs-8 comboMoveTime"></div></div><div class="row form-group" id="dwellTimeInputContainer"><label for="dwellTime" class="col-4 col-xs-4 control-label">Dwell Time</label><div class="col-8 col-xs-8 comboDwellTime"></div></div><div class="row form-group" id="indexTypeInputContainer"><label for="indexType" class="col-4 col-xs-4 control-label">Velocity Jerk</label><div class="col-8 col-xs-8 comboIndexType"></div></div><div class="row form-group" id="smoothnessInputContainer"><label for="smoothness" class="col-4 col-xs-4 control-label">Smoothness</label><div class="col-8 col-xs-8 smoothnessDropDown"></div></div></div><div class="col-6 col-xs-6 inputs"><div class="row form-group" id="peakVelocityInputContainer"><label for="peakVelocity" class="col-4 col-xs-4 control-label">Peak Velocity</label><div class="col-8 col-xs-8 comboPeakVelocity"></div></div><div class="row form-group" id="rmsVelocityInputContainer"><label for="rmsVelocity" class="col-4 col-xs-4 control-label">RMS Velocity</label><div class="col-8 col-xs-8 comboRmsVelocity"></div></div><div class="row form-group" id="peakAccInputContainer"><label for="peakAcc" class="col-4 col-xs-4 control-label">Peak Acceleration</label><div class="col-8 col-xs-8 comboPeakAcc"></div></div><div class="row form-group" id="rmsAccInputContainer"><label for="rmsAcc" class="col-4 col-xs-4 control-label">RMS Acceleration</label><div class="col-8 col-xs-8 comboRmsAcc"></div></div></div></form>');
+      $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Velocity Jerk</label> <div class="combo-container comboIndexType"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
 
       $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").unitsComboBox({
         "unitType": "ANGULARDISTANCE",
@@ -2264,8 +2264,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": settings.moveDistance,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined) {
@@ -2287,8 +2287,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": settings.moveTime,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined) {
@@ -2310,8 +2310,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": settings.dwellTime,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined) {
@@ -2335,8 +2335,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": settings.indexType,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined) {
@@ -2370,8 +2370,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": 0,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined && this.type == "dropdown") {
@@ -2386,8 +2386,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": 0,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined && this.type == "dropdown") {
@@ -2402,8 +2402,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": 0,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined && this.type == "dropdown") {
@@ -2418,8 +2418,8 @@ COSMATT.MotionProfile.configuration = {
         "roundOfNumber": "2",
         "value": 0,
         "comboBoxWidthRatio": {
-          "textBox": "55%",
-          "comboBox": "45%"
+          "textBox": "30%",
+          "comboBox": "32%"
         },
         callBackFn: function() {
           if (this.type != undefined && this.type == "dropdown") {
@@ -2427,6 +2427,38 @@ COSMATT.MotionProfile.configuration = {
           }
         }
       });
+
+      $inputControls.resize(function(e) {
+        var ele = $(e.target);
+        if (ele.width() < 777) {
+          $inputControls.find("#moveDistanceInputContainer .control-label").text("Move Dist.");
+          $inputControls.find("#peakAccInputContainer .control-label").text("Peak Acc.");
+          $inputControls.find("#rmsAccInputContainer .control-label").text("RMS Acc.");
+
+          $inputControls.find('.input-entries').css("width", "55%");
+          $inputControls.find('.output-entries').css("width", "45%");
+
+          var $comboBox = $inputControls.find('.input-container .combo-container .cosmatt-unitComboBox');
+          $comboBox.find('.unitTextBox').css("max-width", "60px");
+          $comboBox.find('.unitComboBox').css("max-width", "60px");
+
+        } else if (ele.width() >= 777) {
+          $inputControls.find("#moveDistanceInputContainer .control-label").text("Move Distance");
+          $inputControls.find("#peakAccInputContainer .control-label").text("Peak Acceleration");
+          $inputControls.find("#rmsAccInputContainer .control-label").text("RMS Acceleration");
+
+          $inputControls.find('.input-entries').css("width", "50%");
+          $inputControls.find('.output-entries').css("width", "50%");
+
+          var $comboBox = $inputControls.find('.input-container .combo-container .cosmatt-unitComboBox');
+          $comboBox.find('.unitTextBox').css("max-width", "100px");
+          $comboBox.find('.unitComboBox').css("max-width", "100px");
+        }
+      });
+
+      if ($inputControls.width() < 777) {
+        $inputControls.trigger("resize");
+      }
     };
 
     var updateCalculatedControls = function() {
@@ -2643,6 +2675,10 @@ COSMATT.MotionProfile.configuration = {
             "comboBox": "true"
           }
         });
+
+        cssClass = params.movedistance.status ? 'fa-check correct' : 'fa-times incorrect';
+        var correctAns = params.movedistance.status ? '' : params.movedistance.correctAnswer + ' rad';
+        $moveDistanceInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.movedtime) {
         cssClass = params.movedtime.status ? 'correct' : 'incorrect';
@@ -2654,6 +2690,10 @@ COSMATT.MotionProfile.configuration = {
             "comboBox": "true"
           }
         });
+
+        cssClass = params.movedtime.status ? 'fa-check correct' : 'fa-times incorrect';
+        var correctAns = params.movedtime.status ? '' : params.movedtime.correctAnswer + ' sec';
+        $moveTimeInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.dweltime) {
         cssClass = params.dweltime.status ? 'correct' : 'incorrect';
@@ -2665,6 +2705,10 @@ COSMATT.MotionProfile.configuration = {
             "comboBox": "true"
           }
         });
+
+        cssClass = params.dweltime.status ? 'fa-check correct' : 'fa-times incorrect';
+        var correctAns = params.dweltime.status ? '' : params.dweltime.correctAnswer + ' sec';
+        $dwellTimeInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.velocityJerk) {
         cssClass = params.velocityJerk.status ? 'correct' : 'incorrect';
@@ -2676,6 +2720,10 @@ COSMATT.MotionProfile.configuration = {
             "comboBox": "true"
           }
         });
+
+        cssClass = params.velocityJerk.status ? 'fa-check correct' : 'fa-times incorrect';
+        var correctAns = params.velocityJerk.status ? '' : params.velocityJerk.correctAnswer + ' %';
+        $velocityJerkInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       disableDraggablePoints();
     }
