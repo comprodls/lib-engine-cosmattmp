@@ -1919,6 +1919,9 @@ COSMATT.MotionProfile.configuration = {
         if (dragItem && settings.onGraphDrag) {
           settings.onGraphDrag();
         }
+        if (dragItem && settings.assessmentMode) {
+          responseNotifier();
+        }
         dragItem = null;
       });
 
@@ -1990,6 +1993,9 @@ COSMATT.MotionProfile.configuration = {
       $container.find("#posGraph").unbind("mouseup").bind("mouseup", function() {
         if (dragItem && settings.onGraphDrag) {
           settings.onGraphDrag();
+        }
+        if (dragItem && settings.assessmentMode) {
+          responseNotifier();
         }
         dragItem = null;
       });
@@ -2128,6 +2134,9 @@ COSMATT.MotionProfile.configuration = {
       $container.find("#aioGraph").unbind("mouseup").bind("mouseup", function() {
         if (dragItem && settings.onGraphDrag) {
           settings.onGraphDrag();
+        }
+        if (dragItem && settings.assessmentMode) {
+          responseNotifier();
         }
         dragItem = null;
       });
