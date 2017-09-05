@@ -2686,7 +2686,7 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.movedistance.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.movedistance.status ? '' : params.movedistance.correctAnswer + ' rad';
+        var correctAns = params.movedistance.status ? '' : '(' + params.movedistance.correctAnswer + ' rad' + ')';
         $moveDistanceInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.movedtime) {
@@ -2701,7 +2701,7 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.movedtime.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.movedtime.status ? '' : params.movedtime.correctAnswer + ' sec';
+        var correctAns = params.movedtime.status ? '' : '(' + params.movedtime.correctAnswer + ' sec' + ')';
         $moveTimeInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.dweltime) {
@@ -2716,7 +2716,7 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.dweltime.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.dweltime.status ? '' : params.dweltime.correctAnswer + ' sec';
+        var correctAns = params.dweltime.status ? '' : '(' + params.dweltime.correctAnswer + ' sec' + ')';
         $dwellTimeInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.velocityJerk) {
@@ -2731,7 +2731,7 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.velocityJerk.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.velocityJerk.status ? '' : params.velocityJerk.correctAnswer + ' %';
+        var correctAns = params.velocityJerk.status ? '' : '(' + params.velocityJerk.correctAnswer + ' %' + ')';
         $velocityJerkInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       disableDraggablePoints();
