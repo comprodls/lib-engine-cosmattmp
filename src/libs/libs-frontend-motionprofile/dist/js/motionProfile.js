@@ -1127,12 +1127,13 @@ COSMATT.MotionProfile.configuration = {
       // $graphContainer.find('.graphArea').css("min-width", (100 / $graphContainer.children().length) + "%");
       // $graphContainer.find('.graphArea').addClass("col-xs-" + 12 / $graphContainer.children().length + " col-" + 12 / $graphContainer.children().length);
       var $graphArea = $graphContainer.find('.graphArea');
-      $graphArea.css({
-        "width": 100 / $graphContainer.children().length + "%",
-        "max-height": "400px",
-        "min-height": "250px",
-        "min-width": "250px"
-      });
+      for (var i = 0; i < $graphArea.length; i++) {
+        if (i === 0 || i === $graphArea.length - 1) {
+          $($graphArea[i]).css('width', "calc(" + 100 / $graphContainer.children().length + "% - 20px)");
+        } else {
+          $($graphArea[i]).css('width', "calc(" + 100 / $graphContainer.children().length + "% - 30px)");
+        }
+      }
       $graphArea.css("height", $graphArea.eq(0).width());
 
       if (settings.graphMode === 1 && settings.graphModeVal === 0) {
@@ -1359,12 +1360,13 @@ COSMATT.MotionProfile.configuration = {
 
 
       var $graphArea = $graphContainer.find('.graphArea');
-      $graphArea.css({
-        "width": 100 / $graphContainer.children().length + "%",
-        "max-height": "400px",
-        "min-height": "250px",
-        "min-width": "250px"
-      });
+      for (var i = 0; i < $graphArea.length; i++) {
+        if (i === 0 || i === $graphArea.length - 1) {
+          $($graphArea[i]).css('width', "calc(" + 100 / $graphContainer.children().length + "% - 20px)");
+        } else {
+          $($graphArea[i]).css('width', "calc(" + 100 / $graphContainer.children().length + "% - 30px)");
+        }
+      }
       $graphArea.css("height", $graphArea.eq(0).width());
 
       if (settings.graphMode === 1 && settings.graphModeVal === 0) {

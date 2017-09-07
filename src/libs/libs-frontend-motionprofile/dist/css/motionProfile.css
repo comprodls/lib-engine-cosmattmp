@@ -80,13 +80,15 @@
   height: 400px;
   min-width: 10px;
   display: inline-block;
-  padding: 0px 5px !important;
+  margin: 0px 15px;
+  max-height: 400px;
+  min-height: 250px;
 }
 .cosmatt-motionProfile #graphContainer .graphArea:first-child {
-  padding-left: 0px !important;
+  margin-left: 0px !important;
 }
 .cosmatt-motionProfile #graphContainer .graphArea:last-child {
-  padding-right: 0px !important;
+  margin-right: 0px !important;
 }
 .cosmatt-motionProfile #graphContainer .graphArea .legend table {
   pointer-events: none;
