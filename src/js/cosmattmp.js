@@ -148,6 +148,7 @@ define([
         //Store the adaptor  
         activityAdaptor = adaptor;
 
+
         //Clone the JSON so that original is preserved.
         var jsonContent = jQuery.extend(true, {}, jsonContentObj);
 
@@ -163,6 +164,7 @@ define([
 
         //add callback function to appData
         __content.appData.options.data.userResponseNotifier = userResponseHandler;
+        __content.appData.options.data.autoResizer = autoResizeEngine;
         __pluginInstance = $pluginArea.motionProfile(__content.appData.options.data);
 
         //$container.motionProfile(params.options.data);
@@ -197,6 +199,10 @@ define([
        */
       function getConfig() {
         return __config;
+      }
+
+      function autoResizeEngine() {
+        activityAdaptor.autoResizeActivityIframe();
       }
 
       function userResponseHandler(callbackValue) {

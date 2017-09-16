@@ -1082,6 +1082,7 @@ COSMATT.MotionProfile.configuration = {
         }
       }
 
+      var timer;
       $graphContainer.resize(function(e) {
         var ele = $(e.target);
         if (ele[0].id === "graphContainer") {
@@ -1101,6 +1102,14 @@ COSMATT.MotionProfile.configuration = {
           }
         } else if (ele.hasClass('graphArea')) {
           ele.height(ele.width());
+        }
+
+        // this is done to support auto resizing in test-runner engine COSMATTMP
+        if (settings.autoResizer && !timer) {
+          timer = setTimeout(function() {
+            settings.autoResizer();
+            timer = undefined;
+          }, 500);
         }
       });
       $graphContainer.trigger("resize");
