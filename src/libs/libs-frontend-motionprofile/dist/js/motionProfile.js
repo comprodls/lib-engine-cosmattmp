@@ -2783,6 +2783,7 @@ COSMATT.MotionProfile.configuration = {
         velPlot.setData(velData);
         velPlot.draw();
       }
+      updateYaxisLabelCSS();
     }
 
     return {
