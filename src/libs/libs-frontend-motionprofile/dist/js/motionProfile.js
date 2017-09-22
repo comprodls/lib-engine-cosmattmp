@@ -1019,7 +1019,7 @@ COSMATT.MotionProfile.configuration = {
             case "Velocity (rad/sec)":
               highestYPt = getHighestPoint(segmentData, "velocity_final", velYMax);
               break;
-            case "Acceleration (rad/sec^2)":
+            case "Acceleration (rad/sec<sup>2</sup>)":
               highestYPt = getHighestPoint(segmentData, "acceleration_final", accYMax);
               break;
             case "Jerk (rad/sec^3)":
@@ -1226,7 +1226,7 @@ COSMATT.MotionProfile.configuration = {
             min: -1 * accMax,
             max: accMax,
             position: "left",
-            axisLabel: "Acceleration (rad/sec^2)",
+            axisLabel: "Acceleration (rad/sec<sup>2</sup>)",
             tickFormatter: function(val, axis) {
               var valStr = val.toString();
               if ((valStr.length > 5 && valStr[0] == "-") || (valStr.length > 4 && valStr[0] != "-")) {
@@ -1297,7 +1297,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'acc': {
             position: "left",
-            axisLabel: "Acceleration (rad/sec^2)",
+            axisLabel: "Acceleration (rad/sec<sup>2</sup>)",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1435,7 +1435,7 @@ COSMATT.MotionProfile.configuration = {
             // min: -1 * accMax,
             // max: accMax,
             position: "left",
-            axisLabel: "Acceleration (rad/sec^2)"
+            axisLabel: "Acceleration (rad/sec<sup>2</sup>)"
           },
           xaxis: {
             min: 0,
@@ -1484,7 +1484,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'acc': {
             position: "left",
-            axisLabel: "Acceleration (rad/sec^2)",
+            axisLabel: "Acceleration (rad/sec<sup>2</sup>)",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -2169,29 +2169,43 @@ COSMATT.MotionProfile.configuration = {
       if (posPlot) {
         var $ylabel = $container.find("#posGraph .yaxisLabel");
         var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-        if (width % 2 != 0) width++;
-        $ylabel.width(width);
+        // if (width % 2 != 0) width++;
+        // $ylabel.width(width);
+        if (width % 2 != 0) {
+          width++;
+          $ylabel.width(width);
+        }
         $ylabel.css('top', '-3%');
       }
       if (velPlot) {
         var $ylabel = $container.find("#velGraph .yaxisLabel");
         var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-        if (width % 2 != 0) width++;
-        $ylabel.width(width);
+        // if (width % 2 != 0) width++;
+        // $ylabel.width(width);
+        if (width % 2 != 0) {
+          width++;
+          $ylabel.width(width);
+        }
         $ylabel.css('top', '-3%');
       }
       if (accPlot) {
         var $ylabel = $container.find("#accGraph .yaxisLabel");
         var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-        if (width % 2 != 0) width++;
-        $ylabel.width(width);
+        if (width % 2 != 0) {
+          width++;
+          $ylabel.width(width);
+        }
         $ylabel.css('top', '-3%');
       }
       if (jerkPlot) {
         var $ylabel = $container.find("#jerkGraph .yaxisLabel");
         var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-        if (width % 2 != 0) width++;
-        $ylabel.width(width);
+        // if (width % 2 != 0) width++;
+        // $ylabel.width(width);
+        if (width % 2 != 0) {
+          width++;
+          $ylabel.width(width);
+        }
         $ylabel.css('top', '-3%');
       }
       if (aioPlot) {
@@ -2200,14 +2214,17 @@ COSMATT.MotionProfile.configuration = {
           var $ylabel = $($ylabels[i]);
           if (!$ylabel.hasClass('xaxisLabel')) {
             var width = Math.ceil($ylabel.width() > $ylabel.height() ? $ylabel.width() : $ylabel.height());
-            if (width % 2 != 0) width++;
-            $ylabel.width(width);
+            // if (width % 2 != 0) width++;
+            // $ylabel.width(width);
+            if (width % 2 != 0) {
+              width++;
+              $ylabel.width(width);
+            }
             $ylabel.css('top', '-3%');
           }
         }
       }
     };
-
 
     var calculateData = function(dataonly) {
       outputData = COSMATT.ProfileCalculation.ProfileIndexModel.calculate(SIValues, initialValues);
