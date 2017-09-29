@@ -1056,12 +1056,12 @@ var unitData = {"unitType": {
         }
 }
 ; //Setup Namspace
-var COSMATT = COSMATT || {};
+window.COSMATT = window.COSMATT || {};
 
 COSMATT.UNITCONVERTER = (function() {
- 
-        //loading unitData.json from some external url
-      /*  $.ajax({
+
+  //loading unitData.json from some external url
+  /*  $.ajax({
             dataType: "text",
             url: '../libs-frontend-unitcombobox/src/data/unitData.json',
             async: false,
@@ -1074,7 +1074,7 @@ COSMATT.UNITCONVERTER = (function() {
             }
         });
 */
-  
+
 
 
   /*  convertedValue function return converted value based on provided inputs
@@ -1132,7 +1132,7 @@ COSMATT.UNITCONVERTER = (function() {
     try {
       var units = [];
       var unitNode = [];
-     
+
       unitNode = unitData.unitType[unitType].unit;
       for (var loop = 0; loop < unitNode.length; loop++) {
         var unitsObj = {};
@@ -1247,6 +1247,52 @@ COSMATT.UNITCONVERTER = (function() {
 
   };
 
+  /* conversionFactor function return value of conversion factor for each unit type
+   * input vaulue is string of unitType and unitName
+   * Example :unitType = 'TIME',  unitName = 'msec'
+   * function will return '60000'
+   */
+  var conversionRatioById = function(unitType, unitFrom, UnitTo) {
+    try {
+      var prevConversionFactor = 1;
+      var newConversionFactor = 1;
+      unitNode = unitData.unitType[unitType].unit;
+      for (var loop = 0; loop < unitNode.length; loop++) {
+        if (unitFrom == "SI" && unitNode[loop].isSI) {
+          prevConversionFactor = unitNode[loop].conversionFactor;
+        } else if (unitNode[loop].id == unitFrom) {
+          prevConversionFactor = unitNode[loop].conversionFactor;
+        }
+
+        if (UnitTo == "SI" && unitNode[loop].isSI) {
+          newConversionFactor = unitNode[loop].conversionFactor;
+        } else if (unitNode[loop].id == UnitTo) {
+          newConversionFactor = unitNode[loop].conversionFactor;
+        }
+      }
+      return newConversionFactor / prevConversionFactor;
+    } catch (errorMessage) {
+      console.log('Error : ' + errorMessage);
+    }
+
+  };
+
+  var unitDetails = function(unitType, unit) {
+    try {
+      var unitNode = [];
+
+      unitNode = unitData.unitType[unitType].unit;
+      for (var loop = 0; loop < unitNode.length; loop++) {
+        if (unitNode[loop].id == unit) {
+          return (unitNode[loop]);
+        }
+      }
+      return null;
+    } catch (errorMessage) {
+      console.log('Error : ' + errorMessage);
+    }
+  }
+
 
   /* PUBLIC METHODS */
   return {
@@ -1257,7 +1303,9 @@ COSMATT.UNITCONVERTER = (function() {
     getSIValue: SIValue,
     getUnitConvertedValue: convertedValue,
     getConversionFactor: conversionFactor,
-    getConversionRatio: conversionRatio
+    getConversionRatio: conversionRatio,
+    getConversionRatioById: conversionRatioById,
+    getUnitDetails: unitDetails
 
   };
 
@@ -1414,10 +1462,22 @@ COSMATT.UNITCONVERTER = (function() {
 
           var $unitWrapper = $('<div class="cosmatt-unitComboBox"></div>');
           $element.append($unitWrapper);
-
-          var $textBoxControl = $('<input type ="textbox" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox"></input>');
+          var textBoxType = 'textbox';
+          if(plugin.settings.mode == 'spin'){
+            textBoxType = 'number';
+          }
+        
+          var $textBoxControl = $('<input type ="'+textBoxType+'" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox"></input>');
           $unitWrapper.append($textBoxControl);
           plugin.setTextBoxValue(plugin.settings.value);
+
+
+          if(plugin.settings.max != undefined){
+            $textBoxControl.attr('max',plugin.settings.max);
+          }
+          if(plugin.settings.min != undefined){
+            $textBoxControl.attr('min',plugin.settings.min);
+          }
 
           var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox"></select');
           $unitWrapper.append($unitDropDown);
