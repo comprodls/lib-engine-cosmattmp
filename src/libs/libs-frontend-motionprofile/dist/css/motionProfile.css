@@ -70,6 +70,30 @@
   background-color: #fff0f0;
   border-color: #A90329;
 }
+.cosmatt-motionProfile.lowerResolution {
+  overflow: hidden;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container {
+  margin-bottom: 7px;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .control-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-left: 20%;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .combo-container {
+  display: block;
+  width: 100%;
+  margin-left: 20%;
+  padding-left: 0;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 32%;
+}
 .cosmatt-motionProfile #profileButtons {
   margin: 10px 0;
 }

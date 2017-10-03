@@ -1,5 +1,5 @@
 'use strict';
-var COSMATT = COSMATT || {};
+window.COSMATT = window.COSMATT || {};
 COSMATT.ProfileCalculation = COSMATT.ProfileCalculation || {};
 COSMATT.ProfileCalculation.CruiseSegment = (function() {
 

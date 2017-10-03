@@ -2567,23 +2567,17 @@ COSMATT.MotionProfile.configuration = {
 
       $inputControls.resize(function(e) {
         var ele = $(e.target);
-        if (ele.width() < 777) {
-          $inputControls.find("#moveDistanceInputContainer .control-label").text("Move Dist.");
-          $inputControls.find("#peakAccInputContainer .control-label").text("Peak Acc.");
-          $inputControls.find("#rmsAccInputContainer .control-label").text("RMS Acc.");
-
+        if (ele.width() < 839) {
+          $widgetContainer.addClass("lowerResolution");
           $inputControls.find('.input-entries').css("width", "55%");
           $inputControls.find('.output-entries').css("width", "45%");
 
           var $comboBox = $inputControls.find('.input-container .combo-container .cosmatt-unitComboBox');
-          $comboBox.find('.unitTextBox').css("max-width", "60px");
-          $comboBox.find('.unitComboBox').css("max-width", "60px");
+          $comboBox.find('.unitTextBox').css("max-width", "100px");
+          $comboBox.find('.unitComboBox').css("max-width", "100px");
 
-        } else if (ele.width() >= 777) {
-          $inputControls.find("#moveDistanceInputContainer .control-label").text("Move Distance");
-          $inputControls.find("#peakAccInputContainer .control-label").text("Peak Acceleration");
-          $inputControls.find("#rmsAccInputContainer .control-label").text("RMS Acceleration");
-
+        } else if (ele.width() >= 839) {
+          $widgetContainer.removeClass("lowerResolution");
           $inputControls.find('.input-entries').css("width", "50%");
           $inputControls.find('.output-entries').css("width", "50%");
 
@@ -2593,7 +2587,7 @@ COSMATT.MotionProfile.configuration = {
         }
       });
 
-      if ($inputControls.width() < 777) {
+      if ($inputControls.width() < 839) {
         $inputControls.trigger("resize");
       }
     };
@@ -2862,6 +2856,20 @@ COSMATT.MotionProfile.configuration = {
         var correctAns = params.velocityJerk.status ? '' : '(' + params.velocityJerk.correctAnswer + ' %' + ')';
         $velocityJerkInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
+
+      $widgetContainer.find(".response-status").unbind("mouseenter").bind("mouseenter",function(e){
+        var element = $(this)[0];
+        var targetOffset = $widgetContainer.offset();
+         if(element.offsetWidth < element.scrollWidth){
+          showTooltip(e.pageX - targetOffset.left ,e.pageY - targetOffset.top,element.innerText);
+          }
+      });
+
+      $widgetContainer.find(".response-status").unbind("mouseleave").bind("mouseleave",function(e){
+          $widgetContainer.find('#tooltip').remove();
+      });
+      
+
       disableDraggablePoints();
     }
 

@@ -12,8 +12,55 @@
   box-shadow: 0 0 0 #ddd !important;
   border: none !important;
 }
-.cosmatt-motionProfile #inputControls .inputs {
+.cosmatt-motionProfile #inputControls .form-horizontal {
+  width: 100%;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs {
+  display: inline-block;
+  vertical-align: top;
   padding-top: 15px;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs.output-entries {
+  width: 50%;
+  float: right;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs.output-entries .input-container {
+  float: right;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs.input-entries {
+  width: 50%;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container {
+  width: 100%;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .control-label {
+  width: 34%;
+  display: inline-block;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container {
+  padding-left: 15px;
+  width: 64%;
+  display: inline-block;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status {
+  display: inline-block;
+  padding-left: 8px;
+  font-size: 12px;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status .incorrect {
+  font-size: 14px;
+  color: #da1a33;
+  display: inline-block;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status .correct {
+  display: inline-block;
+  color: #388e3c;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status .correct-answer {
+  display: inline-block;
+  color: #388e3c;
+  padding-left: 5px;
+  font-weight: bold;
 }
 .cosmatt-motionProfile #inputControls .correct .cosmatt-unitComboBox .unitTextBox {
   background-color: #f0fff0;
@@ -22,6 +69,30 @@
 .cosmatt-motionProfile #inputControls .incorrect .cosmatt-unitComboBox .unitTextBox {
   background-color: #fff0f0;
   border-color: #A90329;
+}
+.cosmatt-motionProfile.lowerResolution {
+  overflow: hidden;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container {
+  margin-bottom: 7px;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .control-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-left: 20%;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .combo-container {
+  display: block;
+  width: 100%;
+  margin-left: 20%;
+  padding-left: 0;
+}
+.cosmatt-motionProfile.lowerResolution #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 32%;
 }
 .cosmatt-motionProfile #profileButtons {
   margin: 10px 0;
@@ -33,13 +104,15 @@
   height: 400px;
   min-width: 10px;
   display: inline-block;
-  padding: 0px 5px !important;
+  margin: 0px 15px;
+  max-height: 400px;
+  min-height: 250px;
 }
 .cosmatt-motionProfile #graphContainer .graphArea:first-child {
-  padding-left: 0px !important;
+  margin-left: 0px !important;
 }
 .cosmatt-motionProfile #graphContainer .graphArea:last-child {
-  padding-right: 0px !important;
+  margin-right: 0px !important;
 }
 .cosmatt-motionProfile #graphContainer .graphArea .legend table {
   pointer-events: none;
@@ -61,6 +134,7 @@
 }
 .cosmatt-motionProfile .smoothnessDropDown .smoothnessDDMenu {
   max-width: 211px;
+  width: 64%;
 }
 .cosmatt-motionProfile #tooltip {
   padding: 4px 10px !important;
