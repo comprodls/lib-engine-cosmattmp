@@ -1434,6 +1434,7 @@ COSMATT.UNITCONVERTER = (function() {
       }
       /** public function set TextboxValue **/
     plugin.setTextBoxValue = function(value) {
+    
       var stringToNum;
       if (value === '') {
         stringToNum = value;
@@ -1448,12 +1449,14 @@ COSMATT.UNITCONVERTER = (function() {
         stringToNum = Math.round(stringToNum * decimalPlaces) / decimalPlaces;
       }
       $element.find(".amount_" + plugin.settings.unitType).val(stringToNum);
+       $element.find(".amount_" + plugin.settings.unitType).attr('title',stringToNum);
     };
     /* private method
      *  createComboBox functions is responsible to create dopdown,textbox and attache event handler 
      *  input value TIME or ANGULARACCELERATION or MASS etc 
      */
     var createComboBox = function(unitType) {
+      
       var callbackData = {};
       try {
         if (typeof COSMATT.UNITCONVERTER === 'object' && unitType != '') {
@@ -1463,11 +1466,13 @@ COSMATT.UNITCONVERTER = (function() {
           var $unitWrapper = $('<div class="cosmatt-unitComboBox"></div>');
           $element.append($unitWrapper);
           var textBoxType = 'textbox';
+          var step ='';
           if(plugin.settings.mode == 'spin'){
             textBoxType = 'number';
+            step = plugin.settings.step;
           }
         
-          var $textBoxControl = $('<input type ="'+textBoxType+'" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox"></input>');
+          var $textBoxControl = $('<input type ="'+textBoxType+'" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox" step="'+step+'"></input>');
           $unitWrapper.append($textBoxControl);
           plugin.setTextBoxValue(plugin.settings.value);
 
@@ -1479,7 +1484,12 @@ COSMATT.UNITCONVERTER = (function() {
             $textBoxControl.attr('min',plugin.settings.min);
           }
 
-          var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox"></select');
+          for (var loop1 = 0; loop1 < dropDownOptions.length; loop1++) {           
+            if(plugin.settings.unit == dropDownOptions[loop1].id){
+              var selectedUnit = dropDownOptions[loop1].name; 
+            }
+          }
+          var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox" title="'+selectedUnit+'"></select');
           $unitWrapper.append($unitDropDown);
 
           $textBoxControl.css('width', plugin.settings.comboBoxWidthRatio.textBox);
@@ -1490,13 +1500,15 @@ COSMATT.UNITCONVERTER = (function() {
             var option = $('<option value="' + dropDownOptions[loop].name + '">' + dropDownOptions[loop].name + '</option>');
             option.data('id', dropDownOptions[loop].id);
             $unitDropDown.append(option);
+           
           }
+
 
           //$element.find('select option[value="' + plugin.settings.unit + '"]').attr("selected", true);
           //$element.find(".unitComboBox").find('option').eq(plugin.settings.unit).attr("selected", true);
 
-          $element.find('select option').filter(function(ele,option){
-           return $(option).data('id') == plugin.settings.unit
+          $element.find('select option').filter(function(ele,option){         
+           return $(option).data('id') == plugin.settings.unit;
           }).attr("selected", true);                
 
           plugin.settings.unit = $element.find('#comboBox' + plugin.settings.unitType + ' :selected').data('id');
@@ -1525,6 +1537,8 @@ COSMATT.UNITCONVERTER = (function() {
 
       $element.find(".unitComboBox").on('change', function(event) {
         // textboxValue = $element.find(".amount_" + plugin.settings.unitType).val();
+
+       
         textboxValue = plugin.settings.value;
         if (textboxValue === '') {
           plugin.setTextBoxValue(textboxValue);
@@ -1541,6 +1555,7 @@ COSMATT.UNITCONVERTER = (function() {
         conversionfactor = COSMATT.UNITCONVERTER.getConversionFactor(plugin.settings.unitType, $(this).val());
 
         plugin.settings.unit = $element.find(":selected").data('id');
+        $(this).attr('title',$(this).val());
         plugin.setTextBoxValue(convertedVal);
 
         if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
