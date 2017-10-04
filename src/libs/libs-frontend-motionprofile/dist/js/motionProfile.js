@@ -739,6 +739,7 @@ COSMATT.MotionProfile.configuration = {
       rmsVelocityUnit: "radianpersecond",
       peakAccelarationUnit: "radianpersecondsquare",
       rmsAccelarationUnit: "radianpersecondsquare",
+      velocityFactorUnit: "percentage",
       graphUnits: {
         "Velocity": "radianpersecond",
         "Position": "radian",
@@ -2468,7 +2469,7 @@ COSMATT.MotionProfile.configuration = {
 
       $inputControls.find("#indexTypeInputContainer").find(".comboIndexType").unitsComboBox({
         "unitType": "PERCENTAGE",
-        "unit": "0",
+        "unit": settings.velocityFactorUnit,
         "roundOfNumber": "2",
         "value": settings.indexType,
         "comboBoxWidthRatio": {
