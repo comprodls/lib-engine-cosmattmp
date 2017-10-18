@@ -2586,11 +2586,20 @@ COSMATT.MotionProfile.configuration = {
           $comboBox.find('.unitTextBox').css("max-width", "100px");
           $comboBox.find('.unitComboBox').css("max-width", "100px");
         }
+
+
+        if (ele.width() < 1239 && ele.width() > 839) {
+          $widgetContainer.addClass("resizeon1240");
+
+        } else if (ele.width() >= 1239) {
+          $widgetContainer.removeClass("resizeon1240");
+        }
       });
 
-      if ($inputControls.width() < 839) {
+      if ($inputControls.width() < 1239) {
         $inputControls.trigger("resize");
       }
+
     };
 
     var updateCalculatedControls = function() {
@@ -2858,18 +2867,18 @@ COSMATT.MotionProfile.configuration = {
         $velocityJerkInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
 
-      $widgetContainer.find(".response-status").unbind("mouseenter").bind("mouseenter",function(e){
+      $widgetContainer.find(".response-status").unbind("mouseenter").bind("mouseenter", function(e) {
         var element = $(this)[0];
         var targetOffset = $widgetContainer.offset();
-         if(element.offsetWidth < element.scrollWidth){
-          showTooltip(e.pageX - targetOffset.left ,e.pageY - targetOffset.top,element.innerText);
-          }
+        if (element.offsetWidth < element.scrollWidth) {
+          showTooltip(e.pageX - targetOffset.left, e.pageY - targetOffset.top, element.innerText);
+        }
       });
 
-      $widgetContainer.find(".response-status").unbind("mouseleave").bind("mouseleave",function(e){
-          $widgetContainer.find('#tooltip').remove();
+      $widgetContainer.find(".response-status").unbind("mouseleave").bind("mouseleave", function(e) {
+        $widgetContainer.find('#tooltip').remove();
       });
-      
+
 
       disableDraggablePoints();
     }
@@ -2895,10 +2904,21 @@ COSMATT.MotionProfile.configuration = {
       updateYaxisLabelCSS();
     }
 
+    function getProfileValues() {
+      return {
+        activeProfileIndex: settings.activeProfileIndex,
+        moveDistance: SIValues.movedistance,
+        moveTime: SIValues.movedtime,
+        dwellTime: SIValues.dweltime,
+        smoothness: SIValues.smoothness
+      }
+    }
+
     return {
       ref: this,
       updateInputs: updateInputs,
-      markAnswers: markAnswers
+      markAnswers: markAnswers,
+      getProfileValues: getProfileValues
     };
   };
 
