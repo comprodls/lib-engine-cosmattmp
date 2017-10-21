@@ -732,11 +732,11 @@ COSMATT.MotionProfile.configuration = {
       smoothness: COSMATT.MotionProfile.configuration.Smoothness.automatic,
       showCheckAnswerButton: false,
       assessmentMode: false,
-      moveDistanceUnit: "radian",
+      moveDistanceUnit: "revolution",
       moveTimeUnit: "second",
       dwellTimeUnit: "second",
-      peakVelocityUnit: "radianpersecond",
-      rmsVelocityUnit: "radianpersecond",
+      peakVelocityUnit: "revolutionsperminute",
+      rmsVelocityUnit: "revolutionsperminute",
       peakAccelarationUnit: "radianpersecondsquare",
       rmsAccelarationUnit: "radianpersecondsquare",
       velocityFactorUnit: "percentage",
@@ -2813,12 +2813,12 @@ COSMATT.MotionProfile.configuration = {
         $moveDistanceInput.data('unitsComboBox').update({
           "enable": {
             "textbox": "false",
-            "comboBox": "true"
+            "comboBox": "false"
           }
         });
 
         cssClass = params.movedistance.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.movedistance.status ? '' : '(' + params.movedistance.correctAnswer + ' rad' + ')';
+        var correctAns = params.movedistance.status ? '' : '(' + params.movedistance.correctAnswer + ' rev' + ')';
         $moveDistanceInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.movedtime) {
@@ -2828,7 +2828,7 @@ COSMATT.MotionProfile.configuration = {
         $moveTimeInput.data('unitsComboBox').update({
           "enable": {
             "textbox": "false",
-            "comboBox": "true"
+            "comboBox": "false"
           }
         });
 
@@ -2843,7 +2843,7 @@ COSMATT.MotionProfile.configuration = {
         $dwellTimeInput.data('unitsComboBox').update({
           "enable": {
             "textbox": "false",
-            "comboBox": "true"
+            "comboBox": "false"
           }
         });
 
@@ -2858,7 +2858,7 @@ COSMATT.MotionProfile.configuration = {
         $velocityJerkInput.data('unitsComboBox').update({
           "enable": {
             "textbox": "false",
-            "comboBox": "true"
+            "comboBox": "false"
           }
         });
 
