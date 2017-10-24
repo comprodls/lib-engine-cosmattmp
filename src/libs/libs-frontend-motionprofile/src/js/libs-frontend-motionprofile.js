@@ -2154,7 +2154,8 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.movedistance.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.movedistance.status ? '' : '(' + params.movedistance.correctAnswer + ' rev' + ')';
+        var convertedValueInRev = COSMATT.UNITCONVERTER.getUnitConvertedValue("ANGULARDISTANCE",params.movedistance.correctAnswer,COSMATT.UNITCONVERTER.getSIUnit("ANGULARDISTANCE").id,"revolution");
+        var correctAns = params.movedistance.status ? '' : '(' + convertedValueInRev + ' rev' + ')';
         $moveDistanceInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.movedtime) {
