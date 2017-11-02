@@ -368,14 +368,14 @@ var unitData = {"unitType": {
             },
             "TEMPERATURE": {
                 "unit": [{
-                    "symbol": "ºC",
+                    "symbol": "&#176;C",
                     "name": "celsius",
                     "conversionFactor": 1,
                     "id": "celsius",
                     "isSI": true,
                     "isMetric": true
                 }, {
-                    "symbol": "ºF",
+                    "symbol": "&#176;F",
                     "name": "fahrenheit",
                     "conversionFactor": 1,
                     "id": "fahrenheit",
