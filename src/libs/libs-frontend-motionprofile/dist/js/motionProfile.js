@@ -720,7 +720,7 @@ COSMATT.MotionProfile.configuration = {
   $.fn.motionProfile = function(options) {
     var defaults = {
       activeProfileIndex: 1,
-      moveDistance: 20,
+      moveDistance: 125.664,
       moveTime: 10,
       dwellTime: 2,
       graphMode: COSMATT.MotionProfile.configuration.GraphMode.individualAxis,
@@ -732,11 +732,11 @@ COSMATT.MotionProfile.configuration = {
       smoothness: COSMATT.MotionProfile.configuration.Smoothness.automatic,
       showCheckAnswerButton: false,
       assessmentMode: false,
-      moveDistanceUnit: "revolution",
+      moveDistanceUnit: "radian",
       moveTimeUnit: "second",
       dwellTimeUnit: "second",
-      peakVelocityUnit: "revolutionsperminute",
-      rmsVelocityUnit: "revolutionsperminute",
+      peakVelocityUnit: "radianpersecond",
+      rmsVelocityUnit: "radianpersecond",
       peakAccelarationUnit: "radianpersecondsquare",
       rmsAccelarationUnit: "radianpersecondsquare",
       velocityFactorUnit: "percentage",
@@ -745,7 +745,8 @@ COSMATT.MotionProfile.configuration = {
         "Position": "radian",
         "Acceleration": "radianpersecondsquare",
         "Jerk": "radianpersecondcube"
-      }
+      },
+      moveDistanceUnitDefaultSelected:"revolution"
     };
 
     if (options.assessmentMode) {
@@ -2418,6 +2419,9 @@ COSMATT.MotionProfile.configuration = {
           }
         }
       });
+
+      var $combobox = $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").data('unitsComboBox');
+      $combobox.setDropBoxItem(settings.moveDistanceUnitDefaultSelected);
 
       $inputControls.find("#moveTimeInputContainer").find(".comboMoveTime").unitsComboBox({
         "unitType": "TIME",
