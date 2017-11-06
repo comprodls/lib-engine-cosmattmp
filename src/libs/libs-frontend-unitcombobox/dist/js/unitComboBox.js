@@ -1424,7 +1424,6 @@ COSMATT.UNITCONVERTER = (function() {
       textboxValue = plugin.settings.value;
       if (textboxValue === '') {
         plugin.setTextBoxValue(textboxValue);
-        plugin.formatTextBoxValue(textboxValue);
         plugin.settings.unit = $element.find(":selected").data('id');
         return;
       }
@@ -1439,7 +1438,6 @@ COSMATT.UNITCONVERTER = (function() {
 
       plugin.settings.unit = $element.find(":selected").data('id');
       plugin.setTextBoxValue(convertedVal);
-      plugin.formatTextBoxValue(convertedVal);
     }
     /** public function set TextboxValue **/
     plugin.setTextBoxValue = function (value) {
@@ -1452,6 +1450,7 @@ COSMATT.UNITCONVERTER = (function() {
         stringToNum = Number(value);
       }
       plugin.settings.value = value;
+      plugin.formatTextBoxValue(value);
       // if (plugin.settings.roundOfNumber !== '' && stringToNum !== '') {
       //   // stringToNum = (stringToNum).toFixed(plugin.settings.roundOfNumber);
       //   // stringToNum = (stringToNum).toFixed(plugin.settings.roundOfNumber);
@@ -1463,6 +1462,10 @@ COSMATT.UNITCONVERTER = (function() {
       $element.find(".amount_" + plugin.settings.unitType).attr('title', plugin.settings.value);
     };
     plugin.formatTextBoxValue = function (value) {
+      if($element.find(".unitTextBox").is(":focus")) {
+        console.log("input has focus, don't format")
+        return;
+      }
       if (value.toString().trim() !== '') {
         if(numberFormatter) {
           value = numberFormatter.format(value);
@@ -1496,7 +1499,6 @@ COSMATT.UNITCONVERTER = (function() {
           var $textBoxControl = $('<input type ="' + textBoxType + '" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox" step="' + step + '"></input>');
           $unitWrapper.append($textBoxControl);
           plugin.setTextBoxValue(plugin.settings.value);
-          plugin.formatTextBoxValue(plugin.settings.value);
           if (plugin.settings.max != undefined) {
             $textBoxControl.attr('max', plugin.settings.max);
           }
@@ -1583,7 +1585,6 @@ COSMATT.UNITCONVERTER = (function() {
         plugin.settings.unit = $element.find(":selected").data('id');
         //$(this).attr('title',$(this).val());
         plugin.setTextBoxValue(convertedVal);
-        plugin.formatTextBoxValue(convertedVal);
 
         if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
           // callbackData.conversionfactor = conversionfactor;
@@ -1602,10 +1603,11 @@ COSMATT.UNITCONVERTER = (function() {
         $(this).val(plugin.settings.value)
       });
       $element.find(".unitTextBox").on('blur', function () {
-        plugin.formatTextBoxValue(plugin.settings.value);
+        plugin.setTextBoxValue(plugin.settings.value);
       });
       $element.find(".unitTextBox").on('input', function () {
         var self = this;
+        plugin.settings.value = $(self).val();
         var $pluginObj = $element
         var callbackData = {};
 
@@ -1614,7 +1616,7 @@ COSMATT.UNITCONVERTER = (function() {
         }
 
         timerId = setTimeout((function () {
-          plugin.setTextBoxValue($(self).val());
+          //plugin.setTextBoxValue($(self).val());
 
           if (parseInt(plugin.settings.value) <= parseInt($(self).attr('max')) && parseInt(plugin.settings.value) >= parseInt($(self).attr('min'))) {
             if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
@@ -1640,4 +1642,4 @@ COSMATT.UNITCONVERTER = (function() {
   }
 
 })(jQuery);
-var Cosmatt=function(t){function i(e){if(n[e])return n[e].exports;var o=n[e]={i:e,l:!1,exports:{}};return t[e].call(o.exports,o,o.exports,i),o.l=!0,o.exports}var n={};return i.m=t,i.c=n,i.d=function(t,n,e){i.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:e})},i.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return i.d(n,"a",n),n},i.o=function(t,i){return Object.prototype.hasOwnProperty.call(t,i)},i.p="",i(i.s=0)}([function(t,i,n){"use strict";Object.defineProperty(i,"__esModule",{value:!0});var e=3,o=6,r=-4,s=function(){function t(t){this.superscripts={0:"⁰",1:"¹",2:"²",3:"³",4:"⁴",5:"⁵",6:"⁶",7:"⁷",8:"⁸",9:"⁹","-":"⁻"},this.options={},t||(t={}),this.options.significantDigits=t.significantDigits||e,this.options.maxPositiveExponent=t.maxPositiveExponent||o,this.options.minNegativeExponent=t.minNegativeExponent||r}return t.prototype.format=function(t){if(t=parseFloat(t),Number.isNaN(t))throw new Error("not a number exception!");if(Number.isInteger(t)){if(Math.abs(t)>=Math.pow(10,this.options.maxPositiveExponent)){var i=t.toExponential(this.options.significantDigits-1);return this.toSuperscript(i)}return t.toString()}if(Math.abs(t)>=Math.pow(10,this.options.maxPositiveExponent)){var n=t.toPrecision(this.options.significantDigits);return this.toSuperscript(n)}if(Math.abs(t)>1)return this.removeTrailingZeroes(t.toFixed(this.options.significantDigits));if(Math.abs(t)<1&&Math.abs(t)>=Math.pow(10,this.options.minNegativeExponent)){var e=Math.abs(this.options.minNegativeExponent)+this.options.significantDigits-1;return this.removeTrailingZeroes(t.toFixed(e))}var o=t.toExponential(this.options.significantDigits-1);return this.toSuperscript(o)},t.prototype.toSuperscript=function(t){var i;if(t.includes("e+"))i=t.split("e+");else{if(!t.includes("e-"))return t;i=t.split("e")}for(var n="",e=0,o=i[1];e<o.length;e++){var r=o[e];n+=this.superscripts[r]}return i[1]=n,i.join("x10")},t.prototype.removeTrailingZeroes=function(t){return t.replace(/(\.\d*?[1-9])0+$/g,"$1")},t}();i.NumberFormatter=s}]);
+var Cosmatt=function(t){function i(n){if(e[n])return e[n].exports;var o=e[n]={i:n,l:!1,exports:{}};return t[n].call(o.exports,o,o.exports,i),o.l=!0,o.exports}var e={};return i.m=t,i.c=e,i.d=function(t,e,n){i.o(t,e)||Object.defineProperty(t,e,{configurable:!1,enumerable:!0,get:n})},i.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return i.d(e,"a",e),e},i.o=function(t,i){return Object.prototype.hasOwnProperty.call(t,i)},i.p="",i(i.s=0)}([function(t,i,e){"use strict";Object.defineProperty(i,"__esModule",{value:!0});var n=3,o=6,r=-4,s=function(){function t(t){this.superscripts={0:"⁰",1:"¹",2:"²",3:"³",4:"⁴",5:"⁵",6:"⁶",7:"⁷",8:"⁸",9:"⁹","-":"⁻"},this.options={},t||(t={}),this.options.significantDigits=t.significantDigits||n,this.options.maxPositiveExponent=t.maxPositiveExponent||o,this.options.minNegativeExponent=t.minNegativeExponent||r}return t.prototype.format=function(t){if(t=parseFloat(t),Number.isNaN(t))throw new Error("not a number exception!");if(Number.isInteger(t)){if(Math.abs(t)>=Math.pow(10,this.options.maxPositiveExponent)){var i=t.toExponential(this.options.significantDigits-1);return this.toSuperscript(i)}return t.toString()}if(Math.abs(t)>=Math.pow(10,this.options.maxPositiveExponent)){var e=t.toPrecision(this.options.significantDigits);return this.toSuperscript(e)}if(Math.abs(t)>1)return this.removeTrailingZeroesAfterDecimal(t.toFixed(this.options.significantDigits));if(Math.abs(t)<1&&Math.abs(t)>=Math.pow(10,this.options.minNegativeExponent)){var n=Math.abs(this.options.minNegativeExponent)+this.options.significantDigits-1;return this.removeTrailingZeroesAfterDecimal(t.toFixed(n))}var o=t.toExponential(this.options.significantDigits-1);return this.toSuperscript(o)},t.prototype.toSuperscript=function(t){var i;if(t.includes("e+"))i=t.split("e+");else{if(!t.includes("e-"))return t;i=t.split("e")}for(var e="",n=0,o=i[1];n<o.length;n++){var r=o[n];e+=this.superscripts[r]}return i[1]=e,i.join("x10")},t.prototype.removeTrailingZeroesAfterDecimal=function(t){return parseFloat(t).toString()},t}();i.NumberFormatter=s}]);

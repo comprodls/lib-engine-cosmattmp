@@ -150,6 +150,10 @@
       $element.find(".amount_" + plugin.settings.unitType).attr('title', plugin.settings.value);
     };
     plugin.formatTextBoxValue = function (value) {
+      if($element.find(".unitTextBox").is(":focus")) {
+        console.log("input has focus, don't format")
+        return;
+      }
       if (value.toString().trim() !== '') {
         if(numberFormatter) {
           value = numberFormatter.format(value);
@@ -287,10 +291,11 @@
         $(this).val(plugin.settings.value)
       });
       $element.find(".unitTextBox").on('blur', function () {
-        plugin.formatTextBoxValue(plugin.settings.value);
+        plugin.setTextBoxValue(plugin.settings.value);
       });
       $element.find(".unitTextBox").on('input', function () {
         var self = this;
+        plugin.settings.value = $(self).val();
         var $pluginObj = $element
         var callbackData = {};
 
@@ -299,7 +304,7 @@
         }
 
         timerId = setTimeout((function () {
-          plugin.setTextBoxValue($(self).val());
+          //plugin.setTextBoxValue($(self).val());
 
           if (parseInt(plugin.settings.value) <= parseInt($(self).attr('max')) && parseInt(plugin.settings.value) >= parseInt($(self).attr('min'))) {
             if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
