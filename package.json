@@ -1,7 +1,7 @@
 {
   "name": "libs-engine-cosmattmp",
   "version": "0.4.0",
-  "description": "Compro COSMATTMP Activity engine",  
+  "description": "Compro COSMATTMP Activity engine",
   "main": "Gruntfile.js",
   "devDependencies": {
     "bower": "1.8.0",
