@@ -762,6 +762,7 @@ COSMATT.MotionProfile.configuration = {
     }
 
     var settings = $.extend(defaults, options);
+    var autoUpdateInputs = true;
     var numberFormatter = new Cosmatt.NumberFormatter(settings.numberFormatterOptions);
     var tickFormatter = function (value, axis) {
       if(value.toString().trim() === '') {
@@ -2013,6 +2014,7 @@ COSMATT.MotionProfile.configuration = {
 
       $container.find("#posGraph").unbind("plothover").bind("plothover", function (event, pos, item) {
         hoverItem = item;
+        autoUpdateInputs = true;
         if (item) {
           var targetOffset = $widgetContainer.offset();
           if (prevItemIndex != item.seriesIndex) {
@@ -2361,6 +2363,7 @@ COSMATT.MotionProfile.configuration = {
     };
 
     var inputControlsCallbackFn = function () {
+      autoUpdateInputs = false;
       calculateAndPaint();
     };
 
@@ -2608,8 +2611,11 @@ COSMATT.MotionProfile.configuration = {
     };
 
     var updateCalculatedControls = function () {
+      if(!autoUpdateInputs) {
+        autoUpdateInputs = true;
+        return;
+      }
       var control;
-
       control = $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").data('unitsComboBox');
       SIValues.movedistance ? control.setTextBoxValue(control.getValueInSelectedUnit(SIValues.movedistance)) : control.setTextBoxValue(SIValues.movedistance);
 
