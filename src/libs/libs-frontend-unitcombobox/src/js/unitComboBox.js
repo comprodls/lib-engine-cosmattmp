@@ -18,9 +18,6 @@
         "comboBox": "40%"
       },
       "numberFormatterOptions": {
-        "significantDigits": 3,
-        "maxPositiveExponent": 6,
-        "minNegativeExponent": -4
       },
       callBackFn: function () { }
     }
