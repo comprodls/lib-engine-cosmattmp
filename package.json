@@ -12,6 +12,8 @@
     "grunt-contrib-connect": "0.5.0",
     "grunt-contrib-requirejs": "1.0.0",
     "grunt-text-replace": "0.4.0",
-    "grunt-contrib-copy": "0.7.0"
+    "grunt-contrib-copy": "0.7.0",
+    "font-awesome": "4.7.0",
+    "jquery.spinner": "^0.2.1"
   }
 }
