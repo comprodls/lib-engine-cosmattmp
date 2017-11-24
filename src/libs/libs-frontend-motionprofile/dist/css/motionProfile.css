@@ -36,6 +36,8 @@
 .cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .control-label {
   width: 34%;
   display: inline-block;
+  top: -8px;
+  position: relative;
 }
 .cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container {
   padding-left: 15px;
@@ -66,17 +68,35 @@
   background-color: #f0fff0;
   border-color: #7DC27D;
 }
+.cosmatt-motionProfile #inputControls .correct .cosmatt-unitComboBox .unitTextBox .form-control {
+  background-color: #f0fff0;
+  border-color: #7DC27D;
+}
 .cosmatt-motionProfile #inputControls .correct .cosmatt-unitComboBox .unitComboBox {
   background-color: #f0fff0;
   border-color: #7DC27D;
 }
+.cosmatt-motionProfile #inputControls .correct .cosmatt-unitComboBox .unitComboBox .btn-group .boxSelectedVal {
+  background-color: #f0fff0;
+  border-color: #7DC27D;
+  opacity: 1;
+}
 .cosmatt-motionProfile #inputControls .incorrect .cosmatt-unitComboBox .unitTextBox {
+  background-color: #fff0f0;
+  border-color: #A90329;
+}
+.cosmatt-motionProfile #inputControls .incorrect .cosmatt-unitComboBox .unitTextBox .form-control {
   background-color: #fff0f0;
   border-color: #A90329;
 }
 .cosmatt-motionProfile #inputControls .incorrect .cosmatt-unitComboBox .unitComboBox {
   background-color: #fff0f0;
   border-color: #A90329;
+}
+.cosmatt-motionProfile #inputControls .incorrect .cosmatt-unitComboBox .unitComboBox .btn-group .boxSelectedVal {
+  background-color: #fff0f0;
+  border-color: #A90329;
+  opacity: 1;
 }
 .cosmatt-motionProfile.resizeon1240 #inputControls .form-horizontal .inputs .input-container .combo-container .cosmatt-unitComboBox .response-status {
   overflow: hidden;
