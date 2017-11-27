@@ -49,6 +49,8 @@
     padding-left: 10px;
     height: 28px;
     min-width: 56px;
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
 }
 .cosmatt-unitComboBox .btn-secondary{
       padding-top: 3px;
