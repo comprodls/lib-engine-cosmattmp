@@ -42,7 +42,16 @@
     padding-right: 4px;
 }
 
-.cosmatt-unitComboBox .unitTextBox .spinner.input-group input {
+.cosmatt-unitComboBox .unitTextBox .spinner.input-group input.input-control {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+    height: 28px;
+    min-width: 56px;
+    border-radius: 4px !important;
+}
+.cosmatt-unitComboBox .unitTextBox .spinner.input-group input.spin-control {
     padding-top: 4px;
     padding-bottom: 4px;
     padding-right: 10px;
@@ -66,6 +75,8 @@
   padding-top: 3px;
   color: #cb3434;
   min-width: 56px;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
 }
 .cosmatt-unitComboBox .dropdown-item{
   padding-left: 10px;
@@ -102,6 +113,4 @@
   padding-right: 4px;
 }
 
-.cosmatt-unitComboBox .dropdown-menu>li>a{
-   
-}
+.btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle)
