@@ -1550,7 +1550,7 @@ COSMATT.UNITCONVERTER = (function() {
           var $buttonGrp = $('<div class="btn-group"></div>');
           $unitDropDown.append($buttonGrp);
 
-          var $btnSecondary = $('<button type="button" class="btn btn-default boxSelectedVal" id="comboBox' + plugin.settings.unitType + '">'+selectedUnit+'</button>');
+          var $btnSecondary = $('<button type="button" data-toggle="dropdown" class="btn btn-default boxSelectedVal" id="comboBox' + plugin.settings.unitType + '">'+selectedUnit+'</button>');
           $buttonGrp.append($btnSecondary);
 
           var $toggleButton = $('<button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>');
