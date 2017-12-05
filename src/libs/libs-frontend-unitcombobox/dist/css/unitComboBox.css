@@ -78,9 +78,11 @@
   min-width: 56px;
   border-top-left-radius: 4px !important;
   border-bottom-left-radius: 4px !important;
+  font-size: 14px;
 }
 .cosmatt-unitComboBox .dropdown-item{
   padding-left: 10px;
+  font-size: 14px !important;
 }
 
 .cosmatt-unitComboBox .disabledContent{
@@ -112,6 +114,7 @@
   background-color: #eceeef;
   padding-left: 4px; 
   padding-right: 4px;
+  padding-top: 3px;
   border-radius: 4px !important;
 }
 
