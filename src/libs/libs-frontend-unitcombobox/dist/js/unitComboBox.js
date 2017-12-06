@@ -1463,7 +1463,7 @@ COSMATT.UNITCONVERTER = (function() {
       // }
 
       //$element.find(".amount_" + plugin.settings.unitType).val(stringToNum);
-      $element.find(".amount_" + plugin.settings.unitType).attr('title', plugin.settings.value);
+      //$element.find(".amount_" + plugin.settings.unitType).attr('title', plugin.settings.value);
     };
     plugin.formatTextBoxValue = function (value) {
       if($element.find(".unitTextBox input").is(":focus")) {
@@ -1632,7 +1632,7 @@ COSMATT.UNITCONVERTER = (function() {
               var selectedUnit = dropDownOptions[loop1].name;
             }
           }
-          var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox" title="' + selectedUnit + '"></select');
+          var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox"></select');
           $unitWrapper.append($unitDropDown);
 
           $textBoxControl.css('width', plugin.settings.comboBoxWidthRatio.textBox);
