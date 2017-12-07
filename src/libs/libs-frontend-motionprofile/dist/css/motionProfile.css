@@ -12,6 +12,10 @@
   box-shadow: 0 0 0 #ddd !important;
   border: none !important;
 }
+.cosmatt-motionProfile.assessment-mode .form-horizontal .inputs .input-container .control-label {
+  top: -8px;
+  position: relative;
+}
 .cosmatt-motionProfile #inputControls .form-horizontal {
   width: 100%;
 }
@@ -36,8 +40,6 @@
 .cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .control-label {
   width: 34%;
   display: inline-block;
-  top: -8px;
-  position: relative;
 }
 .cosmatt-motionProfile #inputControls .form-horizontal .inputs .input-container .combo-container {
   padding-left: 15px;
