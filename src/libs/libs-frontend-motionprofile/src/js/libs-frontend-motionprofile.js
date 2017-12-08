@@ -77,12 +77,14 @@ COSMATT.MotionProfile.configuration = {
       rmsAccelarationUnit: "radianpersecondsquare",
       velocityFactorUnit: "percentage",
       graphUnits: {
-        "Velocity": "radianpersecond",
-        "Position": "radian",
+        "Velocity": "revolutionsperminute",
+        "Position": "revolution",
         "Acceleration": "radianpersecondsquare",
         "Jerk": "radianpersecondcube"
       },
-      moveDistanceUnitDefaultSelected: "revolution",
+      moveDistanceDefaultUnit: "revolution",
+      peakVelocityDefaultUnit:"revolutionsperminute",
+      rmsVelocityDefaultUnit:"revolutionsperminute",
       numberFormatterOptions: {
         "significantDigits": 3,
         "maxPositiveExponent": 6,
@@ -606,7 +608,6 @@ COSMATT.MotionProfile.configuration = {
         addDragDropFunctionalityPostion(posPlot);
       }
       if ($velGraph.length > 0) {
-
         var velPlotOptions = $.extend(true, {
           yaxis: {
             min: -1 * velMax,
@@ -1753,8 +1754,8 @@ COSMATT.MotionProfile.configuration = {
         }
       });
 
-      var $combobox = $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").data('unitsComboBox');
-      $combobox.setDropBoxItem(settings.moveDistanceUnitDefaultSelected);
+      var $moveDistanceComboBox = $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").data('unitsComboBox');
+      $moveDistanceComboBox.setDropBoxItem(settings.moveDistanceDefaultUnit);
 
       $inputControls.find("#moveTimeInputContainer").find(".comboMoveTime").unitsComboBox({
         "unitType": "TIME",
@@ -1859,6 +1860,9 @@ COSMATT.MotionProfile.configuration = {
         }
       });
 
+      var $peakVelocityComboBox = $inputControls.find("#peakVelocityInputContainer").find(".comboPeakVelocity").data('unitsComboBox');
+      $peakVelocityComboBox.setDropBoxItem(settings.peakVelocityDefaultUnit);
+
       $inputControls.find("#rmsVelocityInputContainer").find(".comboRmsVelocity").unitsComboBox({
         "unitType": "ANGULARVELOCITY",
         "unit": settings.rmsVelocityUnit,
@@ -1875,6 +1879,9 @@ COSMATT.MotionProfile.configuration = {
           }
         }
       });
+      
+      var $rmsVelocityComboBox = $inputControls.find("#rmsVelocityInputContainer").find(".comboRmsVelocity").data('unitsComboBox');
+      $rmsVelocityComboBox.setDropBoxItem(settings.rmsVelocityDefaultUnit);
 
       $inputControls.find("#peakAccInputContainer").find(".comboPeakAcc").unitsComboBox({
         "unitType": "ANGULARACCELERATION",
