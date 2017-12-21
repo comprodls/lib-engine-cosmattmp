@@ -992,16 +992,16 @@ COSMATT.MotionProfile.configuration = {
       var pos_final = parseFloat(SIValues.movedistance);
       posPoint = [totalTime, pos_final];
       if (settings.showGraphDragHandles) {
-        if (settings.showGraphDragHandles.indexOf("position") > -1) {
+        if (settings.showGraphDragHandles.indexOf("position") > -1 && posPoint) {
           pointsDataSet.pos.data.push(posPoint);
         }
-        if (settings.showGraphDragHandles.indexOf("peakVelocity") > -1) {
+        if (settings.showGraphDragHandles.indexOf("peakVelocity") > -1 && velPonit) {
           pointsDataSet.vel.data.push(JSON.parse(JSON.stringify(velPonit)));
         }
-        if (settings.showGraphDragHandles.indexOf("moveTime") > -1) {
+        if (settings.showGraphDragHandles.indexOf("moveTime") > -1 && moveTimePoint) {
           pointsDataSet.movetime.data.push(moveTimePoint);
         }
-        if (settings.showGraphDragHandles.indexOf("dwellTime") > -1) {
+        if (settings.showGraphDragHandles.indexOf("dwellTime") > -1 && dwellTimePoint) {
           pointsDataSet.dwell.data.push(dwellTimePoint);
         }
       }
