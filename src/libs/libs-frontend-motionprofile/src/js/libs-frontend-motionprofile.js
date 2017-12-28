@@ -54,6 +54,7 @@ COSMATT.MotionProfile.configuration = {
 
 (function ($) {
   $.fn.motionProfile = function (options) {
+    var callee = $(this)[0];
     var defaults = {
       activeProfileIndex: 1,
       moveDistance: 125.664,
@@ -1702,6 +1703,9 @@ COSMATT.MotionProfile.configuration = {
     var inputControlsCallbackFn = function () {
       autoUpdateInputs = false;
       calculateAndPaint();
+      if(callee.notifyToApp && typeof callee.notifyToApp=="function"){
+        callee.notifyToApp(outputData);
+      }
     };
 
     var responseNotifier = function () {
