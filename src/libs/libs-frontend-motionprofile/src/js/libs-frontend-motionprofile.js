@@ -54,7 +54,6 @@ COSMATT.MotionProfile.configuration = {
 
 (function ($) {
   $.fn.motionProfile = function (options) {
-    var callee = $(this)[0];
     var defaults = {
       activeProfileIndex: 1,
       moveDistance: 125.664,
@@ -90,7 +89,8 @@ COSMATT.MotionProfile.configuration = {
         "significantDigits": 3,
         "maxPositiveExponent": 6,
         "minNegativeExponent": -4
-      }
+      },
+      notifyOutputSegment:""
     };
 
     if (options.assessmentMode) {
@@ -1668,6 +1668,11 @@ COSMATT.MotionProfile.configuration = {
       } else {
         plotGraph(outputData.segmentData);
       }
+
+      if(notifyOutputSegment && typeof notifyOutputSegment=="function"){
+        notifyOutputSegment(outputData);
+      }
+      
     };
 
     var convertDataToGraphDisplayUnits = function (obj) {
@@ -1703,9 +1708,6 @@ COSMATT.MotionProfile.configuration = {
     var inputControlsCallbackFn = function () {
       autoUpdateInputs = false;
       calculateAndPaint();
-      if(callee.notifyToApp && typeof callee.notifyToApp=="function"){
-        callee.notifyToApp(outputData);
-      }
     };
 
     var responseNotifier = function () {

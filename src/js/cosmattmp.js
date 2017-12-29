@@ -240,7 +240,7 @@ define([
         var interactions = __content.optionsJSON;
         var interactionId = '';
         for (interactionId in interactions) {
-          if (interactions[interactionId].type === interactionField) {
+          if (interactions[interactionId] && (interactions[interactionId].type === interactionField)) {
             return interactionId;
           }
         }
@@ -292,23 +292,25 @@ define([
           var interactionMaxScore = __content.score.max / optionsCount;
 
           var interactionId = value.id;
+          if (__content.answersJSON[interactionId]!==undefined) {
+            __content.userAnswersJSON[interactionId] = {};
+            __content.userAnswersJSON[interactionId].answer = value.answer.toString();
+            __content.userAnswersJSON[interactionId].correctanswer = __content.answersJSON[interactionId].correct.toString();
+            __content.userAnswersJSON[interactionId].maxscore = interactionMaxScore;
 
-          __content.userAnswersJSON[interactionId] = {};
-          __content.userAnswersJSON[interactionId].answer = value.answer.toString();
-          __content.userAnswersJSON[interactionId].correctanswer = __content.answersJSON[interactionId].correct.toString();
-          __content.userAnswersJSON[interactionId].maxscore = interactionMaxScore;
-
-          if (Math.round(parseFloat(value.answer) * 100) / 100 == parseFloat(__content.answersJSON[interactionId].correct)) {
-            __content.userAnswersJSON[interactionId].score = interactionMaxScore;
-            __content.userAnswersJSON[interactionId].status = 'correct';
-          } else {
-            __content.userAnswersJSON[interactionId].score = interactionMinScore;
-            __content.userAnswersJSON[interactionId].status = 'incorrect';
+            if (Math.round(parseFloat(value.answer) * 100) / 100 == parseFloat(__content.answersJSON[interactionId].correct)) {
+              __content.userAnswersJSON[interactionId].score = interactionMaxScore;
+              __content.userAnswersJSON[interactionId].status = 'correct';
+            } else {
+              __content.userAnswersJSON[interactionId].score = interactionMinScore;
+              __content.userAnswersJSON[interactionId].status = 'incorrect';
+            }
+            updatePluginVals[__content.optionsJSON[value.id].type] = {
+              value: value.answer
+            };
+            if (value.unit) updatePluginVals[__content.optionsJSON[value.id].type].unit = value.unit;
           }
-          updatePluginVals[__content.optionsJSON[value.id].type] = {
-            value: value.answer
-          };
-          if (value.unit) updatePluginVals[__content.optionsJSON[value.id].type].unit = value.unit;
+
         });
         __pluginInstance.updateInputs(updatePluginVals);
 
@@ -634,16 +636,24 @@ define([
         var interactions = Object.keys(__content.optionsJSON);
         var answers = __content.answersJSON;
         interactions.forEach(function(element, index) {
-          if (userAnswers[element] && userAnswers[element].status) {
-            if (userAnswers[element].status == "correct") {
-              markAnswerObj[options[element].type] = { status: true };
+          if (options[element]) {
+            if (userAnswers[element] && userAnswers[element].status) {
+              if (userAnswers[element].status == "correct") {
+                markAnswerObj[options[element].type] = {
+                  status: true
+                };
+              } else {
+                markAnswerObj[options[element].type] = {
+                  status: false
+                };
+              }
             } else {
-              markAnswerObj[options[element].type] = { status: false };
+              markAnswerObj[options[element].type] = {
+                status: false
+              };
             }
-          } else {
-            markAnswerObj[options[element].type] = { status: false };
+            markAnswerObj[options[element].type].correctAnswer = answers[element].correct;
           }
-          markAnswerObj[options[element].type].correctAnswer = answers[element].correct;
 
         });
         __pluginInstance.markAnswers(markAnswerObj);

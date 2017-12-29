@@ -2332,6 +2332,11 @@ COSMATT.MotionProfile.configuration = {
       } else {
         plotGraph(outputData.segmentData);
       }
+
+      if(callee.notifyToApp && typeof callee.notifyToApp=="function"){
+        callee.notifyToApp(outputData);
+      }
+      
     };
 
     var convertDataToGraphDisplayUnits = function (obj) {
@@ -2367,9 +2372,6 @@ COSMATT.MotionProfile.configuration = {
     var inputControlsCallbackFn = function () {
       autoUpdateInputs = false;
       calculateAndPaint();
-      if(callee.notifyToApp && typeof callee.notifyToApp=="function"){
-        callee.notifyToApp(outputData);
-      }
     };
 
     var responseNotifier = function () {
