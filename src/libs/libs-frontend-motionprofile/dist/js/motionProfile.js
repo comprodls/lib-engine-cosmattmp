@@ -2301,6 +2301,17 @@ COSMATT.MotionProfile.configuration = {
     };
 
     var calculateData = function (dataonly) {
+
+      if(SIValues.velocityJerk > 2){
+        resetProfileData();
+        resetCalculatedValues();
+        setTimeout(function (dataonly) {
+          plotEmptyGraph();
+          attachResizeToPlots(false);
+        }, 0); 
+        return;
+      }
+
       outputData = COSMATT.ProfileCalculation.ProfileIndexModel.calculate(SIValues, initialValues);
 
       var profileElements = outputData.elementsData;
