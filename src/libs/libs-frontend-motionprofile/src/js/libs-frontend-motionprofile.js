@@ -90,7 +90,7 @@ COSMATT.MotionProfile.configuration = {
         "maxPositiveExponent": 6,
         "minNegativeExponent": -4
       },
-      notifyOutputSegment:""
+      notifyIOData:""
     };
 
     if (options.assessmentMode) {
@@ -1167,7 +1167,7 @@ COSMATT.MotionProfile.configuration = {
         bret = false;
       }
 
-      if (!(!isNaN(SIValues.velocityJerk) && (SIValues.velocityJerk >= 0 && SIValues.velocityJerk <= 100))) {
+      if (!(!isNaN(uiValues.velocityJerk) && (uiValues.velocityJerk >= 1 && uiValues.velocityJerk <= 2))) {
         $inputControls.find("#indexTypeInputContainer").addClass("has-error");
         bret = false;
       }
@@ -1193,8 +1193,8 @@ COSMATT.MotionProfile.configuration = {
 
       minVel = -Infinity;
       var inputData = (JSON.parse(JSON.stringify(SIValues)));
-      inputData.velocityJerk = 100;
-      inputData.velocityJerk = 0;
+      inputData.velocityJerk = 2;
+      inputData.velocityJerk = 1;
       var minVelSegmentData = COSMATT.ProfileCalculation.ProfileIndexModel.calculate(inputData, initialValues).segmentData;
       for (var i = 0; i < Object.keys(minVelSegmentData).length; i++) {
         for (var j = 0; j < minVelSegmentData[Object.keys(minVelSegmentData)[i]].length; j++) {
@@ -1272,7 +1272,7 @@ COSMATT.MotionProfile.configuration = {
                 Vff = xpos * pos.y * 100 / AreaUnderCurve;
               }
               // TODOuiValues.velocityJerk = parseFloat(Math.ceil(Vff));
-              SIValues.velocityJerk = parseFloat(Math.ceil(Vff));
+              SIValues.velocityJerk = parseFloat(Math.ceil(Vff)/100) + 1;
               break;
             case 2:
               var dwt;
@@ -1489,8 +1489,8 @@ COSMATT.MotionProfile.configuration = {
                 Vff = xpos * yCordinate * 100 / AreaUnderCurve;
               }
               // TODO
-              uiValues.velocityJerk = parseFloat(Math.ceil(Vff));
-              SIValues.velocityJerk = parseFloat(Math.ceil(Vff));
+              uiValues.velocityJerk = parseFloat(Math.ceil(Vff)/100) + 1;
+              SIValues.velocityJerk = parseFloat(Math.ceil(Vff)/100) + 1;
               break;
             case 4:
               var dwt;
@@ -1669,8 +1669,16 @@ COSMATT.MotionProfile.configuration = {
         plotGraph(outputData.segmentData);
       }
 
-      if(notifyOutputSegment && typeof notifyOutputSegment=="function"){
-        notifyOutputSegment(outputData);
+      var inputData = {
+        "moveDistance": SIValues.movedistance,
+        "moveTime":  SIValues.movedtime,
+        "dwellTime": SIValues.dweltime,
+        "velocityFactor":SIValues.velocityJerk,
+        "smoothness": SIValues.smoothness
+        }
+        
+      if(settings.notifyIOData && typeof settings.notifyIOData=="function"){
+        settings.notifyIOData({"inputs":inputData,"output":outputData});
       }
       
     };
@@ -1692,13 +1700,13 @@ COSMATT.MotionProfile.configuration = {
       settings.activeProfileIndex = parseInt(settings.activeProfileIndex);
       switch (settings.activeProfileIndex) {
         case 1:
-          settings.indexType = 50;
+          settings.indexType = 1.5;
           break;
         case 2:
-          settings.indexType = 100;
+          settings.indexType = 2;
           break;
         case 3:
-          settings.indexType = 0;
+          settings.indexType = 1;
           break;
         default:
           break;
@@ -1734,7 +1742,7 @@ COSMATT.MotionProfile.configuration = {
 
     var generateInputControls = function () {
       var $inputControls = $widgetContainer.find("#inputControls");
-      $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Velocity Factor</label> <div class="combo-container comboIndexType"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
+      $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Crest Factor</label> <div class="combo-container comboIndexType"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
 
       $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").unitsComboBox({
         "unitType": "ANGULARDISTANCE",
@@ -1822,6 +1830,7 @@ COSMATT.MotionProfile.configuration = {
           "textBox": "30%",
           "comboBox": "32%"
         },
+        "showTextBoxOnly":"true",
         numberFormatterOptions: settings.numberFormatterOptions,
         callBackFn: function () {
           if (this.type != undefined) {
@@ -2122,6 +2131,19 @@ COSMATT.MotionProfile.configuration = {
           plotEmptyGraph();
           attachResizeToPlots(false);
         }, 0);
+
+        var inputData = {
+          "moveDistance": SIValues.movedistance,
+          "moveTime": SIValues.movedtime,
+          "dwellTime": SIValues.dweltime,
+          "velocityFactor": SIValues.velocityJerk,
+          "smoothness": SIValues.smoothness
+        }
+
+        if (settings.notifyIOData && typeof settings.notifyIOData == "function") {
+          settings.notifyIOData({ "inputs": inputData, "output": {} });
+        }
+
       }
       updateYaxisLabelCSS();
       $container.on('resize', function () {
@@ -2232,7 +2254,7 @@ COSMATT.MotionProfile.configuration = {
         });
 
         cssClass = params.velocityJerk.status ? 'fa-check correct' : 'fa-times incorrect';
-        var correctAns = params.velocityJerk.status ? '' : '(' + params.velocityJerk.correctAnswer + ' %' + ')';
+        var correctAns = params.velocityJerk.status ? '' : '(' + params.velocityJerk.correctAnswer + ')';
         $velocityJerkInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
 

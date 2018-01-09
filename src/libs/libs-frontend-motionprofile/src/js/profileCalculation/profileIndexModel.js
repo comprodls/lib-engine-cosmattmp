@@ -35,7 +35,7 @@ COSMATT.ProfileCalculation.ProfileIndexModel = (function() {
   var updateVelocityJerkSkewVars = function(inputData) {
     var velJerkPerc, velSkewperc;
     if (inputData.velocityJerk != undefined) {
-      velJerkPerc = inputData.velocityJerk;
+      velJerkPerc = (inputData.velocityJerk-1) * 100;
     } else {
       velJerkPerc = 50;
     }
