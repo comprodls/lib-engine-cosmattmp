@@ -2352,6 +2352,7 @@ COSMATT.MotionProfile.configuration = {
         "smoothness": SIValues.smoothness
         }
         
+      outputData.analysisData = calculatedValues;
       if(settings.notifyIOData && typeof settings.notifyIOData=="function"){
         settings.notifyIOData({"inputs":inputData,"output":outputData});
       }
@@ -2417,7 +2418,7 @@ COSMATT.MotionProfile.configuration = {
 
     var generateInputControls = function () {
       var $inputControls = $widgetContainer.find("#inputControls");
-      $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Crest Factor</label> <div class="combo-container comboIndexType"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
+      $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Crest Factor</label> <div class="combo-container comboIndexType"></div></div> <div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
 
       $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").unitsComboBox({
         "unitType": "ANGULARDISTANCE",
@@ -2608,6 +2609,7 @@ COSMATT.MotionProfile.configuration = {
       });
 
       $inputControls.resize(function (e) {
+
         var ele = $(e.target);
         if (ele.width() < 839) {
           $widgetContainer.addClass("lowerResolution");
@@ -2618,6 +2620,10 @@ COSMATT.MotionProfile.configuration = {
           $comboBox.find('.unitTextBox').css("max-width", "100px");
           $comboBox.find('.unitComboBox').css("max-width", "100px");
 
+          var $CrestFactorComboBox = $inputControls.find('.input-container#indexTypeInputContainer .combo-container .cosmatt-unitComboBox');
+          $CrestFactorComboBox.find('.unitTextBox').css("max-width", "210px");
+          $CrestFactorComboBox.find('.unitTextBox').css("width", "62%");
+
         } else if (ele.width() >= 839) {
           $widgetContainer.removeClass("lowerResolution");
           $inputControls.find('.input-entries').css("width", "50%");
@@ -2626,6 +2632,10 @@ COSMATT.MotionProfile.configuration = {
           var $comboBox = $inputControls.find('.input-container .combo-container .cosmatt-unitComboBox');
           $comboBox.find('.unitTextBox').css("max-width", "100px");
           $comboBox.find('.unitComboBox').css("max-width", "100px");
+
+         var $CrestFactorComboBox = $inputControls.find('.input-container#indexTypeInputContainer .combo-container .cosmatt-unitComboBox');
+         $CrestFactorComboBox.find('.unitTextBox').css("max-width", "210px");
+         $CrestFactorComboBox.find('.unitTextBox').css("width", "62%");
         }
 
 
@@ -2815,8 +2825,16 @@ COSMATT.MotionProfile.configuration = {
           "smoothness": SIValues.smoothness
         }
 
+         if(typeof outputData==="object"){
+           outputData.analysisData = calculatedValues;
+         }
+         else{
+           outputData =  {};
+           outputData.analysisData = calculatedValues;
+         }
+
         if (settings.notifyIOData && typeof settings.notifyIOData == "function") {
-          settings.notifyIOData({ "inputs": inputData, "output": {} });
+          settings.notifyIOData({ "inputs": inputData, "output": outputData });
         }
 
       }

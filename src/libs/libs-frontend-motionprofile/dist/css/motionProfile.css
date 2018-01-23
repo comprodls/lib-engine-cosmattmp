@@ -66,6 +66,13 @@
   padding-left: 5px;
   font-weight: bold;
 }
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs #indexTypeInputContainer .combo-container .cosmatt-unitComboBox .unitTextBox {
+  width: 62%;
+  max-width: 210px;
+}
+.cosmatt-motionProfile #inputControls .form-horizontal .inputs #indexTypeInputContainer .combo-container .cosmatt-unitComboBox .unitTextBox .input-group {
+  display: block;
+}
 .cosmatt-motionProfile #inputControls .correct .cosmatt-unitComboBox .unitTextBox {
   background-color: #f0fff0;
   border-color: #7DC27D;
