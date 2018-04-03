@@ -96,6 +96,8 @@ var NumberFormatter = /** @class */ (function () {
         this.options["significantDigits"] = settings.significantDigits || DEFAULT_SIGNIFICANT_DIGITS;
         this.options["maxPositiveExponent"] = settings.maxPositiveExponent || DEFAULT_MAX_POSITIVE_EXPONENT;
         this.options["minNegativeExponent"] = settings.minNegativeExponent || DEFAULT_MIN_NEGATIVE_EXPONENT;
+        this.isNaNPolyfill();
+        this.includesPolyFill();
     }
     NumberFormatter.prototype.format = function (originalInput, isEditable) {
         if (isEditable === void 0) { isEditable = false; }
@@ -140,6 +142,26 @@ var NumberFormatter = /** @class */ (function () {
         }
         parts[1] = superExponent;
         return parts.join("x10");
+    };
+    NumberFormatter.prototype.isNaNPolyfill = function () {
+        Number.isNaN = Number.isNaN || function (value) {
+            return value !== value;
+        };
+    };
+    NumberFormatter.prototype.includesPolyFill = function () {
+        if (!String.prototype.includes) {
+            String.prototype.includes = function (search, start) {
+                if (typeof start !== 'number') {
+                    start = 0;
+                }
+                if (start + search.length > this.length) {
+                    return false;
+                }
+                else {
+                    return this.indexOf(search, start) !== -1;
+                }
+            };
+        }
     };
     return NumberFormatter;
 }());

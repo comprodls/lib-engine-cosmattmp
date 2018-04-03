@@ -667,7 +667,7 @@ COSMATT.ProfileCalculation.ProfileIndexModel = (function() {
 window.COSMATT = window.COSMATT || {};
 COSMATT.MotionProfile = COSMATT.MotionProfile || {};
 
-COSMATT.MotionProfile.configuration = {
+COSMATT.MotionProfile.ENUMS = {
   DataFields: {
     moveDistance: "moveDistance",
     moveTime: "moveTime",
@@ -708,54 +708,25 @@ COSMATT.MotionProfile.configuration = {
     standard: 1,
     maximum: 2
   },
-  UnitData: {
-    "Velocity": "ANGULARVELOCITY",
-    "Position": "ANGULARDISTANCE",
-    "Acceleration": "ANGULARACCELERATION",
-    "Jerk": "ANGULARJERK"
+  LinearOrRotary:{
+    Rotary:"ROTARY",
+    Linear:"LINEAR"
   }
 };
 
 (function ($) {
   $.fn.motionProfile = function (options) {
-    var defaults = {
-      activeProfileIndex: 1,
-      moveDistance: 125.664,
-      moveTime: 10,
-      dwellTime: 2,
-      graphMode: COSMATT.MotionProfile.configuration.GraphMode.individualAxis,
-      showGraphs: [COSMATT.MotionProfile.configuration.Graphs.velocity],
-      showGraphDragHandles: COSMATT.MotionProfile.configuration.GraphHandles.showAll,
-      readOnlyInputs: false,
-      hideInputs: false,
-      showProfiles: COSMATT.MotionProfile.configuration.Profiles.showAll,
-      smoothness: COSMATT.MotionProfile.configuration.Smoothness.automatic,
-      showCheckAnswerButton: false,
-      assessmentMode: false,
-      moveDistanceUnit: "radian",
-      moveTimeUnit: "second",
-      dwellTimeUnit: "second",
-      peakVelocityUnit: "radianpersecond",
-      rmsVelocityUnit: "radianpersecond",
-      peakAccelarationUnit: "radianpersecondsquare",
-      rmsAccelarationUnit: "radianpersecondsquare",
-      velocityFactorUnit: "percentage",
-      graphUnits: {
-        "Velocity": "revolutionsperminute",
-        "Position": "revolution",
-        "Acceleration": "radianpersecondsquare",
-        "Jerk": "radianpersecondcube"
-      },
-      moveDistanceDefaultUnit: "revolution",
-      peakVelocityDefaultUnit:"revolutionsperminute",
-      rmsVelocityDefaultUnit:"revolutionsperminute",
-      numberFormatterOptions: {
-        "significantDigits": 3,
-        "maxPositiveExponent": 6,
-        "minNegativeExponent": -4
-      },
-      notifyIOData:""
-    };
+
+    var defaults = COSMATT.MotionProfile.getDefaults();
+    var linearDefaults = COSMATT.MotionProfile.getlinearDefaults();
+    var rotaryDefaults = COSMATT.MotionProfile.getRotaryDefaults();
+
+    if(options.linearOrRotary && options.linearOrRotary == COSMATT.MotionProfile.ENUMS.LinearOrRotary.Linear){
+      defaults = $.extend(defaults, linearDefaults);
+    }
+    else{
+      defaults = $.extend(defaults, rotaryDefaults);
+    }
 
     if (options.assessmentMode) {
       defaults.moveDistance = "";
@@ -975,25 +946,25 @@ COSMATT.MotionProfile.configuration = {
       // updating graphs to be displayed
       var aioGraphPointsArr = [];
       if (settings.showGraphs.length > 0) {
-        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.configuration.Graphs.position) > -1) {
+        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.ENUMS.Graphs.position) > -1) {
           aioGraphPointsArr.push(dataSet.pos, pointsDataSet.pos);
         } else {
           aioGraphPointsArr.push([], []);
         }
 
-        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.configuration.Graphs.velocity) > -1) {
+        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.ENUMS.Graphs.velocity) > -1) {
           aioGraphPointsArr.push(dataSet.vel, pointsDataSet.vel, pointsDataSet.dwell, pointsDataSet.movetime);
         } else {
           aioGraphPointsArr.push([], [], [], []);
         }
 
-        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.configuration.Graphs.acceleration) > -1) {
+        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.ENUMS.Graphs.acceleration) > -1) {
           aioGraphPointsArr.push(dataSet.acc);
         } else {
           aioGraphPointsArr.push([]);
         }
 
-        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.configuration.Graphs.jerk) > -1) {
+        if (settings.showGraphs.indexOf(COSMATT.MotionProfile.ENUMS.Graphs.jerk) > -1) {
           aioGraphPointsArr.push(dataSet.jerk);
         } else {
           aioGraphPointsArr.push([]);
@@ -1009,7 +980,7 @@ COSMATT.MotionProfile.configuration = {
       if (posPlot) {
         var highestYPtPos = getHighestPoint(segmentData, "position_final", posYMax);
 
-        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
+        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
         if (conversionFactor && conversionFactor != 1) highestYPtPos *= conversionFactor;
 
         posPlot.getOptions().yaxes[0].max = highestYPtPos;
@@ -1023,7 +994,7 @@ COSMATT.MotionProfile.configuration = {
       if (velPlot) {
         var highestYPtVel = getHighestPoint(segmentData, "velocity_final", velYMax);
 
-        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
+        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
         if (conversionFactor && conversionFactor != 1) highestYPtVel *= conversionFactor;
 
         velPlot.getOptions().yaxes[0].max = highestYPtVel;
@@ -1037,7 +1008,7 @@ COSMATT.MotionProfile.configuration = {
       if (accPlot) {
         var highestYPtAcc = getHighestPoint(segmentData, "acceleration_final", accYMax);
 
-        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
+        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
         if (conversionFactor && conversionFactor != 1) highestYPtAcc *= conversionFactor;
 
         accPlot.getOptions().yaxes[0].max = highestYPtAcc;
@@ -1051,7 +1022,7 @@ COSMATT.MotionProfile.configuration = {
       if (jerkPlot) {
         var highestYPtJerk = getHighestPoint(segmentData, "jerk", jerkYMax);
 
-        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
+        var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
         if (conversionFactor && conversionFactor != 1) highestYPtJerk *= conversionFactor;
 
         jerkPlot.getOptions().yaxes[0].max = highestYPtJerk;
@@ -1068,34 +1039,34 @@ COSMATT.MotionProfile.configuration = {
 
         for (var i = 0; i < yaxesArr.length; i++) {
           switch (yaxesArr[i].axisLabel) {
-            case "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")":
+            case "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")":
               highestYPt = getHighestPoint(segmentData, "position_final", posYMax);
 
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
               if (conversionFactor && conversionFactor != 1) highestYPt *= conversionFactor;
 
               break;
 
-            case "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")":
+            case "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")":
               highestYPt = getHighestPoint(segmentData, "velocity_final", velYMax);
 
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
               if (conversionFactor && conversionFactor != 1) highestYPt *= conversionFactor;
 
               break;
 
-            case "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")":
+            case "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")":
               highestYPt = getHighestPoint(segmentData, "acceleration_final", accYMax);
 
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
               if (conversionFactor && conversionFactor != 1) highestYPt *= conversionFactor;
 
               break;
 
-            case "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")":
+            case "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")":
               highestYPt = getHighestPoint(segmentData, "jerk", jerkYMax);
 
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
               if (conversionFactor && conversionFactor != 1) highestYPt *= conversionFactor;
 
               break;
@@ -1198,16 +1169,16 @@ COSMATT.MotionProfile.configuration = {
       var jerkMax = getHighestPoint(segmentData, "jerk", jerkYMax);
       var triggerResize = true;
 
-      var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
+      var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Position"], 'SI', settings.graphUnits["Position"]);
       if (conversionFactor && conversionFactor != 1) posMax *= conversionFactor;
 
-      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
+      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
       if (conversionFactor && conversionFactor != 1) velMax *= conversionFactor;
 
-      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
+      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Acceleration"], 'SI', settings.graphUnits["Acceleration"]);
       if (conversionFactor && conversionFactor != 1) accMax *= conversionFactor;
 
-      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
+      conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Jerk"], 'SI', settings.graphUnits["Jerk"]);
       if (conversionFactor && conversionFactor != 1) jerkMax *= conversionFactor;
 
       if ($graphContainer.children().length === 0) {
@@ -1259,7 +1230,7 @@ COSMATT.MotionProfile.configuration = {
             min: -1 * posMax,
             max: posMax,
             position: "left",
-            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
+            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
             tickFormatter: tickFormatter
           },
           xaxis: {
@@ -1278,7 +1249,7 @@ COSMATT.MotionProfile.configuration = {
             min: -1 * velMax,
             max: velMax,
             position: "left",
-            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
+            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
             tickFormatter: tickFormatter
           },
           xaxis: {
@@ -1298,7 +1269,7 @@ COSMATT.MotionProfile.configuration = {
             min: -1 * accMax,
             max: accMax,
             position: "left",
-            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
+            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
             tickFormatter: tickFormatter
           },
           xaxis: {
@@ -1317,7 +1288,7 @@ COSMATT.MotionProfile.configuration = {
             min: -1 * jerkMax,
             max: jerkMax,
             position: "left",
-            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
+            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
             tickFormatter: tickFormatter
           },
           xaxis: {
@@ -1335,7 +1306,7 @@ COSMATT.MotionProfile.configuration = {
         var yaxesOptions = {
           'pos': {
             position: "left",
-            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
+            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1345,7 +1316,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'vel': {
             position: "left",
-            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
+            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1355,7 +1326,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'acc': {
             position: "left",
-            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
+            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1365,7 +1336,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'jerk': {
             position: "left",
-            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
+            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1465,7 +1436,7 @@ COSMATT.MotionProfile.configuration = {
             // min: -1 * posMax,
             // max: posMax,
             position: "left",
-            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")"
+            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")"
           },
           xaxis: {
             min: 0,
@@ -1481,7 +1452,7 @@ COSMATT.MotionProfile.configuration = {
             // min: -1 * velMax,
             // max: velMax,
             position: "left",
-            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")"
+            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")"
           },
           xaxis: {
             min: 0,
@@ -1497,7 +1468,7 @@ COSMATT.MotionProfile.configuration = {
             // min: -1 * accMax,
             // max: accMax,
             position: "left",
-            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")"
+            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")"
           },
           xaxis: {
             min: 0,
@@ -1513,7 +1484,7 @@ COSMATT.MotionProfile.configuration = {
             // min: -1 * jerkMax,
             // max: jerkMax,
             position: "left",
-            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")"
+            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")"
           },
           xaxis: {
             min: 0,
@@ -1528,7 +1499,7 @@ COSMATT.MotionProfile.configuration = {
         var yaxesOptions = {
           'pos': {
             position: "left",
-            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
+            axisLabel: "Position (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1538,7 +1509,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'vel': {
             position: "left",
-            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
+            axisLabel: "Velocity (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Velocity"], settings.graphUnits["Velocity"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1548,7 +1519,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'acc': {
             position: "left",
-            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
+            axisLabel: "Acceleration (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Acceleration"], settings.graphUnits["Acceleration"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1558,7 +1529,7 @@ COSMATT.MotionProfile.configuration = {
           },
           'jerk': {
             position: "left",
-            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(COSMATT.MotionProfile.configuration.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
+            axisLabel: "Jerk (" + COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Jerk"], settings.graphUnits["Jerk"]).symbol + ")",
             // axisLabelUseCanvas: true,
             axisLabelFontSizePixels: 12,
             axisLabelFontFamily: 'Verdana, Arial',
@@ -1868,7 +1839,7 @@ COSMATT.MotionProfile.configuration = {
         }
       }
 
-      var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
+      var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Velocity"], 'SI', settings.graphUnits["Velocity"]);
       if (conversionFactor && conversionFactor != 1) minVel = parseFloat(minVel) * conversionFactor;
       maxVel = 2 * minVel;
       if (profileElements.dwell) {
@@ -1902,7 +1873,7 @@ COSMATT.MotionProfile.configuration = {
           if (prevItemIndex != item.seriesIndex) {
             switch (item.seriesIndex) {
               case 1:
-                showTooltip(item.pageX - targetOffset.left, item.pageY - targetOffset.top, "Drag to change Velocity Jerk");
+                showTooltip(item.pageX - targetOffset.left, item.pageY - targetOffset.top, "Drag to change Crest Factor");
                 prevItemIndex = item.seriesIndex;
                 break;
               case 2:
@@ -2044,7 +2015,7 @@ COSMATT.MotionProfile.configuration = {
                 moveDis = parseFloat(pos.y);
               }
               // get moveDis value in SI
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"], 'SI');
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Position"], settings.graphUnits["Position"], 'SI');
               if (conversionFactor && conversionFactor != 1) moveDis = parseFloat(moveDis) * conversionFactor;
               // TODO ui value to be set in dropdown selected unit
               uiValues.movedistance = parseFloat(moveDis);
@@ -2104,7 +2075,7 @@ COSMATT.MotionProfile.configuration = {
                 prevItemIndex = item.seriesIndex;
                 break;
               case 3:
-                showTooltip(item.pageX - targetOffset.left, item.pageY - targetOffset.top, "Drag to change Velocity Jerk");
+                showTooltip(item.pageX - targetOffset.left, item.pageY - targetOffset.top, "Drag to change Crest Factor");
                 prevItemIndex = item.seriesIndex;
                 break;
               case 4:
@@ -2135,7 +2106,7 @@ COSMATT.MotionProfile.configuration = {
                 moveDis = parseFloat(pos.y);
               }
               // get moveDis value in SI
-              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData["Position"], settings.graphUnits["Position"], 'SI');
+              var conversionFactor = COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData["Position"], settings.graphUnits["Position"], 'SI');
               if (conversionFactor && conversionFactor != 1) moveDis = parseFloat(moveDis) * conversionFactor;
               // TODO
               uiValues.movedistance = parseFloat(moveDis);
@@ -2143,7 +2114,7 @@ COSMATT.MotionProfile.configuration = {
               break;
             case 3:
               var Vff;
-              var yCordinate = settings.showGraphs.indexOf(COSMATT.MotionProfile.configuration.Graphs.position) > -1 ? pos.y2 : pos.y1;
+              var yCordinate = settings.showGraphs.indexOf(COSMATT.MotionProfile.ENUMS.Graphs.position) > -1 ? pos.y2 : pos.y1;
               if (yCordinate >= maxVel) {
                 Vff = 100;
               } else if (yCordinate <= minVel) {
@@ -2363,7 +2334,7 @@ COSMATT.MotionProfile.configuration = {
       var toUnits = settings.graphUnits;
       var datakeys = Object.keys(obj);
       for (var i = 0; i < datakeys.length; i++) {
-        var conversionFactor = COSMATT.MotionProfile.configuration.UnitData[obj[datakeys[i]].graphtype] ? COSMATT.UNITCONVERTER.getConversionRatioById(COSMATT.MotionProfile.configuration.UnitData[obj[datakeys[i]].graphtype], 'SI', toUnits[obj[datakeys[i]].graphtype]) : undefined;
+        var conversionFactor = settings.UnitData[obj[datakeys[i]].graphtype] ? COSMATT.UNITCONVERTER.getConversionRatioById(settings.UnitData[obj[datakeys[i]].graphtype], 'SI', toUnits[obj[datakeys[i]].graphtype]) : undefined;
         if (conversionFactor && conversionFactor != 1) {
           for (var j = 0; j < obj[datakeys[i]].data.length; j++) {
             obj[datakeys[i]].data[j][1] *= conversionFactor;
@@ -2421,7 +2392,7 @@ COSMATT.MotionProfile.configuration = {
       $inputControls.append('<form class="form-horizontal"> <div class="input-entries inputs"> <div class="form-group input-container" id="moveDistanceInputContainer"> <label for="moveDistance" class="control-label">Move Distance</label> <div class="combo-container comboMoveDistance"></div></div><div class="form-group input-container" id="moveTimeInputContainer"> <label for="moveTime" class="control-label">Move Time</label> <div class="combo-container comboMoveTime"></div></div><div class="form-group input-container" id="indexTypeInputContainer"> <label for="indexType" class="control-label">Crest Factor</label> <div class="combo-container comboIndexType"></div></div> <div class="form-group input-container" id="dwellTimeInputContainer"> <label for="dwellTime" class="control-label">Dwell Time</label> <div class="combo-container comboDwellTime"></div></div><div class="form-group input-container" id="smoothnessInputContainer"> <label for="smoothness" class="control-label">Smoothness</label> <div class="combo-container smoothnessDropDown"></div></div></div><div class="output-entries inputs"> <div class="form-group input-container" id="peakVelocityInputContainer"> <label for="peakVelocity" class="control-label">Peak Velocity</label> <div class="combo-container comboPeakVelocity"></div></div><div class="form-group input-container" id="rmsVelocityInputContainer"> <label for="rmsVelocity" class="control-label">RMS Velocity</label> <div class="combo-container comboRmsVelocity"></div></div><div class="form-group input-container" id="peakAccInputContainer"> <label for="peakAcc" class="control-label">Peak Acceleration</label> <div class="combo-container comboPeakAcc"></div></div><div class="form-group input-container" id="rmsAccInputContainer"> <label for="rmsAcc" class="control-label">RMS Acceleration</label> <div class="combo-container comboRmsAcc"></div></div></div></form>');
 
       $inputControls.find("#moveDistanceInputContainer").find(".comboMoveDistance").unitsComboBox({
-        "unitType": "ANGULARDISTANCE",
+        "unitType": settings.UnitData.Position,
         "unit": settings.moveDistanceUnit,
         "roundOfNumber": "2",
         "value": settings.moveDistance,
@@ -2535,7 +2506,7 @@ COSMATT.MotionProfile.configuration = {
       // });
 
       $inputControls.find("#peakVelocityInputContainer").find(".comboPeakVelocity").unitsComboBox({
-        "unitType": "ANGULARVELOCITY",
+        "unitType": settings.UnitData.Velocity,
         "unit": settings.peakVelocityUnit,
         "roundOfNumber": "2",
         "value": 0,
@@ -2555,7 +2526,7 @@ COSMATT.MotionProfile.configuration = {
       $peakVelocityComboBox.setDropBoxItem(settings.peakVelocityDefaultUnit);
 
       $inputControls.find("#rmsVelocityInputContainer").find(".comboRmsVelocity").unitsComboBox({
-        "unitType": "ANGULARVELOCITY",
+        "unitType": settings.UnitData.Velocity,
         "unit": settings.rmsVelocityUnit,
         "roundOfNumber": "2",
         "value": 0,
@@ -2575,7 +2546,7 @@ COSMATT.MotionProfile.configuration = {
       $rmsVelocityComboBox.setDropBoxItem(settings.rmsVelocityDefaultUnit);
 
       $inputControls.find("#peakAccInputContainer").find(".comboPeakAcc").unitsComboBox({
-        "unitType": "ANGULARACCELERATION",
+        "unitType": settings.UnitData.Acceleration,
         "unit": settings.peakAccelarationUnit,
         "roundOfNumber": "2",
         "value": 0,
@@ -2592,7 +2563,7 @@ COSMATT.MotionProfile.configuration = {
       });
 
       $inputControls.find("#rmsAccInputContainer").find(".comboRmsAcc").unitsComboBox({
-        "unitType": "ANGULARACCELERATION",
+        "unitType": settings.UnitData.Acceleration,
         "unit": settings.rmsAccelarationUnit,
         "roundOfNumber": "2",
         "value": 0,
@@ -2635,7 +2606,7 @@ COSMATT.MotionProfile.configuration = {
 
          var $CrestFactorComboBox = $inputControls.find('.input-container#indexTypeInputContainer .combo-container .cosmatt-unitComboBox');
          $CrestFactorComboBox.find('.unitTextBox').css("max-width", "210px");
-         $CrestFactorComboBox.find('.unitTextBox').css("width", "62%");
+         $CrestFactorComboBox.find('.unitTextBox').css("width", "65%");
         }
 
 
@@ -2729,7 +2700,7 @@ COSMATT.MotionProfile.configuration = {
     var handleGraphDragHandles = function (showGraphDragHandles) {
       if (typeof (showGraphDragHandles) === "boolean") {
         if (showGraphDragHandles === true) {
-          settings.showGraphDragHandles = [COSMATT.MotionProfile.configuration.GraphHandles.position, COSMATT.MotionProfile.configuration.GraphHandles.peakVelocity, COSMATT.MotionProfile.configuration.GraphHandles.moveTime, COSMATT.MotionProfile.configuration.GraphHandles.dwellTime];
+          settings.showGraphDragHandles = [COSMATT.MotionProfile.ENUMS.GraphHandles.position, COSMATT.MotionProfile.ENUMS.GraphHandles.peakVelocity, COSMATT.MotionProfile.ENUMS.GraphHandles.moveTime, COSMATT.MotionProfile.ENUMS.GraphHandles.dwellTime];
         } else {
           settings.showGraphDragHandles = [];
         }
@@ -2739,7 +2710,7 @@ COSMATT.MotionProfile.configuration = {
     var makeInputsReadOnly = function (readOnlyInputsArr) {
       if (typeof (readOnlyInputsArr) === "boolean") {
         if (readOnlyInputsArr === true) {
-          readOnlyInputsArr = [COSMATT.MotionProfile.configuration.DataFields.moveDistance, COSMATT.MotionProfile.configuration.DataFields.moveTime, COSMATT.MotionProfile.configuration.DataFields.dwellTime, COSMATT.MotionProfile.configuration.DataFields.velocityFormFactor, COSMATT.MotionProfile.configuration.DataFields.peakVelocity, COSMATT.MotionProfile.configuration.DataFields.rmsVelocity, COSMATT.MotionProfile.configuration.DataFields.peakAccelaration, COSMATT.MotionProfile.configuration.DataFields.rmsAccelaration];
+          readOnlyInputsArr = [COSMATT.MotionProfile.ENUMS.DataFields.moveDistance, COSMATT.MotionProfile.ENUMS.DataFields.moveTime, COSMATT.MotionProfile.ENUMS.DataFields.dwellTime, COSMATT.MotionProfile.ENUMS.DataFields.velocityFormFactor, COSMATT.MotionProfile.ENUMS.DataFields.peakVelocity, COSMATT.MotionProfile.ENUMS.DataFields.rmsVelocity, COSMATT.MotionProfile.ENUMS.DataFields.peakAccelaration, COSMATT.MotionProfile.ENUMS.DataFields.rmsAccelaration];
         } else {
           readOnlyInputsArr = [];
         }
@@ -2900,9 +2871,10 @@ COSMATT.MotionProfile.configuration = {
           }
         });
 
+        var symbolMoveDistance = COSMATT.UNITCONVERTER.getUnitDetails(settings.UnitData["Position"], settings.graphUnits["Position"]).symbol;
         cssClass = params.movedistance.status ? 'fa-check correct' : 'fa-times incorrect';
-        var convertedValueInRev = COSMATT.UNITCONVERTER.getUnitConvertedValue("ANGULARDISTANCE", params.movedistance.correctAnswer, COSMATT.UNITCONVERTER.getSIUnit("ANGULARDISTANCE").id, "revolution");
-        var correctAns = params.movedistance.status ? '' : '(' + Math.round(convertedValueInRev) + ' rev' + ')';
+        var convertedValueInRev = COSMATT.UNITCONVERTER.getUnitConvertedValue(settings.UnitData.Position, params.movedistance.correctAnswer, COSMATT.UNITCONVERTER.getSIUnit(settings.UnitData.Position).id, settings.moveDistanceDefaultUnit);
+        var correctAns = params.movedistance.status ? '' : '(' + Math.round(convertedValueInRev) + ' ' + symbolMoveDistance + ')';
         $moveDistanceInput.find('.cosmatt-unitComboBox').append('<span class="response-status"><span class="fa ' + cssClass + '"></span><span class="correct-answer">' + correctAns + '</span></span>');
       }
       if (params.movedtime) {
@@ -3007,3 +2979,87 @@ COSMATT.MotionProfile.configuration = {
   };
 
 }(jQuery));
+'use strict';
+
+window.COSMATT = window.COSMATT || {};
+COSMATT.MotionProfile = COSMATT.MotionProfile || {};
+
+COSMATT.MotionProfile.getDefaults = function(type){
+   return {
+    activeProfileIndex: 1,
+    moveDistance: 125.664,
+    moveTime: 10,
+    dwellTime: 2,
+    graphMode: COSMATT.MotionProfile.ENUMS.GraphMode.individualAxis,
+    showGraphs: [COSMATT.MotionProfile.ENUMS.Graphs.velocity],
+    showGraphDragHandles: COSMATT.MotionProfile.ENUMS.GraphHandles.showAll,
+    readOnlyInputs: false,
+    hideInputs: false,
+    showProfiles: COSMATT.MotionProfile.ENUMS.Profiles.showAll,
+    smoothness: COSMATT.MotionProfile.ENUMS.Smoothness.automatic,
+    showCheckAnswerButton: false,
+    assessmentMode: false,
+    moveTimeUnit: "second",
+    dwellTimeUnit: "second",
+    velocityFactorUnit: "percentage",
+    numberFormatterOptions: {
+      "significantDigits": 3,
+      "maxPositiveExponent": 6,
+      "minNegativeExponent": -4
+    },
+    notifyIOData: ""
+  };
+}
+
+COSMATT.MotionProfile.getRotaryDefaults =  function(){
+  return {
+      linearOrRotary: COSMATT.MotionProfile.ENUMS.LinearOrRotary.Rotary,
+      graphUnits: {
+        "Velocity": "revolutionsperminute",
+        "Position": "revolution",
+        "Acceleration": "radianpersecondsquare",
+        "Jerk": "radianpersecondcube"
+      },
+      UnitData: {
+        "Velocity": "ANGULARVELOCITY",
+        "Position": "ANGULARDISTANCE",
+        "Acceleration": "ANGULARACCELERATION",
+        "Jerk": "ANGULARJERK"
+      },
+      moveDistanceUnit: "radian",
+      peakVelocityUnit: "radianpersecond",
+      rmsVelocityUnit: "radianpersecond",
+      peakAccelarationUnit: "radianpersecondsquare",
+      rmsAccelarationUnit: "radianpersecondsquare",
+      moveDistanceDefaultUnit: "revolution",
+      peakVelocityDefaultUnit: "revolutionsperminute",
+      rmsVelocityDefaultUnit: "revolutionsperminute"
+    };
+ } 
+
+  COSMATT.MotionProfile.getlinearDefaults = function(){
+    return {
+      linearOrRotary: COSMATT.MotionProfile.ENUMS.LinearOrRotary.Linear,
+      graphUnits: {
+        "Velocity": "meterpersecond",
+        "Position": "meter",
+        "Acceleration": "meterpersecondsquare",
+        "Jerk": "meterpersecondcube"
+      },
+      UnitData: {
+        "Velocity": "VELOCITY",
+        "Position": "LINEARDISTANCE",
+        "Acceleration": "ACCELERATION",
+        "Jerk": "JERK"
+      },
+      moveDistanceUnit: "meter",
+      peakVelocityUnit: "meterpersecond",
+      rmsVelocityUnit: "meterpersecond",
+      peakAccelarationUnit: "meterpersecondsquare",
+      rmsAccelarationUnit: "meterpersecondsquare",
+      moveDistanceDefaultUnit: "meter",
+      peakVelocityDefaultUnit: "meterpersecond",
+      rmsVelocityDefaultUnit: "meterpersecond"
+    };
+  }
+

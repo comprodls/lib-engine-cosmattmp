@@ -5,4 +5,6 @@ export declare class NumberFormatter {
     constructor(settings: INumberFormatterOptions);
     format(originalInput: any, isEditable?: boolean): string;
     toSuperscript(exponent: string): string;
+    isNaNPolyfill(): void;
+    includesPolyFill(): void;
 }

@@ -101,10 +101,8 @@ var unitData = {"unitType": {
                 "unit": [{
                     "symbol": "rad/sec",
                     "name": "radian/second",
-                    "conversionFactor": 1,                    
-                    "isSI": true,
+                    "conversionFactor": 1,
                     "id": "radianpersecond"
-                    
                 }, {
                     "symbol": "deg/sec",
                     "name": "degree/second",
@@ -121,7 +119,8 @@ var unitData = {"unitType": {
                     "conversionFactor": 9.54929658551372,
                     "id": "revolutionsperminute",
                     "isMetric": true,
-                    "isImperial": true
+                    "isImperial": true,
+                    "isSI": true
                 }]
             },
             "ACCELERATION": {
@@ -289,35 +288,35 @@ var unitData = {"unitType": {
                 "unit": [{
                     "symbol": "kg-m&sup2;",
                     "name": "kilogram-meter²",
-                    "conversionFactor": 0.00001828997852042,
+                    "conversionFactor": 0.0000182997852,
                     "id": "kilogrammetersquare",
                     "isSI": true,
                     "isMetric": true
                 }, {
                     "symbol": "kg-cm&sup2;",
                     "name": "kilogram-centimeter²",
-                    "conversionFactor": 0.1828997852042,
+                    "conversionFactor": 0.182997852,
                     "id": "kilogramcentimetersquare"
                 }, {
                     "symbol": "Nm-s&sup2;",
                     "name": "newton-meter-second²",
-                    "conversionFactor": 0.00001828997852042,
+                    "conversionFactor": 0.0000182997852,
                     "id": "newtonmetersecondsquare"
                 }, {
                     "symbol": "oz-in-s&sup2;",
-                    "name": "ounce-inch-second²",
-                    "conversionFactor": 0.002590079179883,
-                    "id": "ounceinchsecondsquare"
+                    "name": "pound-inch-second²",
+                    "conversionFactor": 0.00259008,
+                    "id": "poundinchsecondsquare"
                 }, {
                     "symbol": "lb-in-s&sup2;",
                     "name": "pound-inch-second²",
-                    "conversionFactor": 0.0001618799487976,
+                    "conversionFactor": 0.00016188,
                     "id": "poundinchsecondsquare",
                     "isImperial": true
                 }, {
                     "symbol": "lb-ft-s&sup2;",
                     "name": "pound-feet-second²",
-                    "conversionFactor": 0.00001348999573283,
+                    "conversionFactor": 0.00001349,
                     "id": "poundfeetsecondsquare"
                 }, {
                     "symbol": "oz-in&sup2;",
@@ -327,22 +326,22 @@ var unitData = {"unitType": {
                 }, {
                     "symbol": "lb-in&sup2;",
                     "name": "pound-inch²",
-                    "conversionFactor": 0.06250000061883,
+                    "conversionFactor": 0.0625,
                     "id": "INERTIA_8"
                 }, {
                     "symbol": "lb-ft&sup2;",
                     "name": "pound-feet²",
-                    "conversionFactor": 0.0004340277820752,
+                    "conversionFactor": 0.000434028,
                     "id": "poundfeetsquare"
                 }, {
                     "symbol": "gm-mm&sup2;",
                     "name": "gram-millimeter²",
-                    "conversionFactor": 18289.97852042,
+                    "conversionFactor": 18299.7852,
                     "id": "grammillimetersquare"
                 }, {
                     "symbol": "Kg-mm&sup2;",
                     "name": "kilogram-millimeter²",
-                    "conversionFactor": 18.28997852042,
+                    "conversionFactor": 18.2997852,
                     "id": "kilogrammillimetersquare"
                 }]
             },
@@ -1313,7 +1312,7 @@ COSMATT.UNITCONVERTER = (function() {
 (function ($) {
 
   // add the plugin to the jQuery.fn object
-  $.fn.unitsComboBox = function (options) {
+  $.fn.unitsLabelControl = function (options) {
     // default values 
     var defaults = {
       "unitType": "",
@@ -1329,8 +1328,6 @@ COSMATT.UNITCONVERTER = (function() {
         "textBox": "60%",
         "comboBox": "40%"
       },
-      "step":"0.1",
-      "dataRule":"currency",
       "numberFormatterOptions": {
       },
       callBackFn: function () { }
@@ -1346,30 +1343,15 @@ COSMATT.UNITCONVERTER = (function() {
     var numberFormatter = new Cosmatt.NumberFormatter(plugin.settings.numberFormatterOptions);
     
     // the "constructor" method that gets called when the object is created
-    plugin.init = function () {
-      
+    plugin.init = function () {      
       // function is called to intialze dom element
-      createComboBox(plugin.settings.unitType);
-      
+      createComboBox(plugin.settings.unitType);      
     }
-
-    /** public function to update plugin contols based on inputs  **/
-    plugin.update = function (options) {
-      var newOptions = $.extend({}, plugin.settings, options);
-
-      $element.find('.cosmatt-unitComboBox')[newOptions.show == 'true' ? 'show' : 'hide']();
-
-      newOptions.enable.textbox == 'true' ? $element.find('.cosmatt-unitComboBox').find('input').removeAttr('disabled') :
-        $element.find('.cosmatt-unitComboBox').find('input').attr('disabled', 'disabled');
-
-      newOptions.enable.comboBox == 'true' ? $element.find('.cosmatt-unitComboBox').find('.btn-group').find('button').removeAttr('disabled') :
-        $element.find('.cosmatt-unitComboBox').find('.btn-group').find('button').attr('disabled', 'disabled');
-
-      $element.find('.cosmatt-unitComboBox').find('.unitTextBox')[newOptions.showComboBoxOnly == 'true' ? 'hide' : 'show']();
-
-      $element.find('.cosmatt-unitComboBox').find('.unitComboBox')[newOptions.showTextBoxOnly == 'true' ? 'hide' : 'show']();
-    };
-
+    plugin.setSIValue = function (value) {
+      var SIUnit = COSMATT.UNITCONVERTER.getSIUnit(plugin.settings.unitType);
+      var currentValue = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType,value,SIUnit.id,plugin.settings.unit);     
+      plugin.setTextBoxValue(currentValue);
+    }
     /** public function return SI value for provided unit type **/
     plugin.getSIValue = function () {
 
@@ -1387,10 +1369,6 @@ COSMATT.UNITCONVERTER = (function() {
 
     /** public function return value in selected unit type from dropdown **/
     plugin.getValueInSelectedUnit = function (siVal) {
-
-
-
-      // var textboxValue = 0;
       var SIUnitObj = '';
       if (typeof COSMATT.UNITCONVERTER === 'object') {
         SIUnitObj = COSMATT.UNITCONVERTER.getSIUnit(plugin.settings.unitType);
@@ -1413,42 +1391,27 @@ COSMATT.UNITCONVERTER = (function() {
       return conversionfactor;
     };
     /** public function set DropBox Item **/
+
     plugin.setDropBoxItem = function (optionId) {
 
-      $element.find('.dropdown-menu a').filter(function (ele, option) {           
-            $element.find('a.selected').removeClass('selected');
-            return $(option).data('id') == optionId;
-      }).addClass("selected");
-     
-      $element.find('button.boxSelectedVal').text($element.find('a.selected').text());
-      
+       var dropDownOptions = COSMATT.UNITCONVERTER.getunitsAndIds(plugin.settings.unitType);      
 
+        for (var loop1 = 0; loop1 < dropDownOptions.length; loop1++) {
+            if (optionId == dropDownOptions[loop1].id) {
+              var selectedUnit = dropDownOptions[loop1].name;
+              var selectedUnitId = dropDownOptions[loop1].id;           
+            }
+        }
+      $element.find('.unitLabel').html(selectedUnit);  
       var textboxValue = 0;
-      textboxValue = plugin.settings.value;
-      if (textboxValue === '') {
-        plugin.setTextBoxValue(textboxValue);
-        plugin.settings.unit = $element.find('a.selected').data('id');
-        return;
-      }
+      textboxValue = plugin.settings.value;        
 
-      if (plugin.settings.showComboBoxOnly == 'true') {
-        var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, 1, plugin.settings.unit, $element.find('a.selected').data('id'));
-      } else {
-        var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, textboxValue, plugin.settings.unit, $element.find('a.selected').data('id'));
-      }
+      var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, textboxValue, plugin.settings.unit,selectedUnitId);
 
-      // conversionfactor = COSMATT.UNITCONVERTER.getConversionFactor(plugin.settings.unitType, $(this).val());
-
-      plugin.settings.unit = $element.find('a.selected').data('id');
+      plugin.settings.unit = selectedUnitId;
       plugin.setTextBoxValue(convertedVal);
     }
-    /** public function to set Value in SI unit **/
-    plugin.setSIValue = function (value) {
-      var SIUnit = COSMATT.UNITCONVERTER.getSIUnit(plugin.settings.unitType);
-      var currentValue = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType,value,SIUnit.id,plugin.settings.unit); 
-      
-      plugin.setTextBoxValue(currentValue);
-    }
+   
     /** public function set TextboxValue **/
     plugin.setTextBoxValue = function (value) {
 
@@ -1462,671 +1425,60 @@ COSMATT.UNITCONVERTER = (function() {
       plugin.settings.value = value;
     
       plugin.formatTextBoxValue(value);
-      // if (plugin.settings.roundOfNumber !== '' && stringToNum !== '') {
-      //   // stringToNum = (stringToNum).toFixed(plugin.settings.roundOfNumber);
-      //   // stringToNum = (stringToNum).toFixed(plugin.settings.roundOfNumber);
-      //   var decimalPlaces = Math.pow(10, plugin.settings.roundOfNumber);
-      //   stringToNum = Math.round(stringToNum * decimalPlaces) / decimalPlaces;
-      // }
-
-      //$element.find(".amount_" + plugin.settings.unitType).val(stringToNum);
-      //$element.find(".amount_" + plugin.settings.unitType).attr('title', plugin.settings.value);
+    
     };
-    plugin.formatTextBoxValue = function (value) {
-      if($element.find(".unitTextBox input").is(":focus")) {
-        console.log("input has focus, don't format")
-        return;
+     plugin.formatTextBoxValue = function (value) {
+      
+      if (value.toString().trim() !== '') {
+        if(numberFormatter) {
+          value = numberFormatter.format(value, true);
+        }
+        $element.find(".amount_" + plugin.settings.unitType).text(value);
       }
-      if(numberFormatter) {
-        value = numberFormatter.format(value, true);
-      }
-      $element.find(".amount_" + plugin.settings.unitType).val(value);
     };
     /* private method
      *  createComboBox functions is responsible to create dopdown,textbox and attache event handler 
      *  input value TIME or ANGULARACCELERATION or MASS etc 
      */
-    var createComboBox = function (unitType) {
+      var createComboBox = function (unitType) {
 
       var callbackData = {};
       try {
         if (typeof COSMATT.UNITCONVERTER === 'object' && unitType != '') {
           var dropDownOptions = COSMATT.UNITCONVERTER.getunitsAndIds(unitType);
-          //var UNITSI = COSMATT.UNITCONVERTER.getSIUnit(unitType);
+         
 
-          var $unitWrapper = $('<div class="cosmatt-unitComboBox"></div>');
+          var $unitWrapper = $('<div class="cosmatt-unitLabelControl"></div>');
           $element.append($unitWrapper);
 
+          var $inputLabel = $('<div class="unitInputLabel text-left amount_' + plugin.settings.unitType + '"></div>');
+          $unitWrapper.append($inputLabel);
 
-          var $textboxContainer = $('<div class="unitTextBox"></div>');
-          $unitWrapper.append($textboxContainer);
-
-
-          var $spinControlWrap = $('<div class="input-group unitComboBoxGrp"></div>');
-          $textboxContainer.append($spinControlWrap);
-
-         
-          if (plugin.settings.mode == 'spin') {  
-
-            $spinControlWrap.addClass("spinner");
-
-            $spinControlWrap.attr('data-trigger','spinner');
-
-             var $inputBox = $('<input type="text" class="form-control text-left spin-control amount_' + plugin.settings.unitType + '" value="" data-rule="'+plugin.settings.dataRule+'"></div>');
-             $spinControlWrap.append($inputBox);
-
-            $inputBox.attr('data-step', plugin.settings.step);
-            var $inputGroup = $('<div class="input-group-addon"></div>');
-            $spinControlWrap.append($inputGroup);
-
-            var $spinUp = $('<a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>');
-            $inputGroup.append($spinUp);
-
-            var $spinDown = $(' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>');
-            $inputGroup.append($spinDown);
-
-          }
-          else{
-            $spinControlWrap.addClass("defaultTextBox");
-
-            var $inputBox = $('<input type="text" class="form-control text-left input-control amount_' + plugin.settings.unitType + '" value="" data-rule="'+plugin.settings.dataRule+'"></div>');
-            $spinControlWrap.append($inputBox);
-          }         
-         
           plugin.setTextBoxValue(plugin.settings.value);
 
-          if (plugin.settings.max != undefined) {
-            $inputBox.attr('max', plugin.settings.max);
-          }
-          else {
-            $inputBox.attr('max', '9999999999');
-          }
-          if (plugin.settings.min != undefined) {
-            $inputBox.attr('min', plugin.settings.min);
-          }
-          else {
-            $inputBox.attr('min', '0');
-          }
-
-          /***********************Drop Box*************************/
-           for (var loop1 = 0; loop1 < dropDownOptions.length; loop1++) {
+          for (var loop1 = 0; loop1 < dropDownOptions.length; loop1++) {
             if (plugin.settings.unit == dropDownOptions[loop1].id) {
               var selectedUnit = dropDownOptions[loop1].name;
               var selectedUnitId = dropDownOptions[loop1].id;
             }
           }
 
-          var $unitDropDown = $('<div class="unitComboBox"></div>');
-          $unitWrapper.append($unitDropDown);
+          var $unitLabel = $('<div class="unitLabel" id="unitLabel' + plugin.settings.unitType + '">'+selectedUnit+'</div>');
+          $unitWrapper.append($unitLabel);
 
-          var $buttonGrp = $('<div class="btn-group"></div>');
-          $unitDropDown.append($buttonGrp);
-
-          var $btnSecondary = $('<button type="button" data-toggle="dropdown" class="btn btn-default boxSelectedVal" id="comboBox' + plugin.settings.unitType + '">'+selectedUnit+'</button>');
-          $buttonGrp.append($btnSecondary);
-
-          var $toggleButton = $('<button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>');
-          $buttonGrp.append($toggleButton);
-
-          var $menuItems = $('<ul class="dropdown-menu"></ul>');
-          $buttonGrp.append($menuItems);
-
-          for (var loop = 0; loop < dropDownOptions.length; loop++) {
-            var $list = $('<li></li>');
-            $menuItems.append($list);
-            var option = $('<a class="dropdown-item">'+dropDownOptions[loop].name+'</a>');    
-            option.data('id', dropDownOptions[loop].id);       
-            $list.append(option);
-          }
-
-          $textboxContainer.css('width', plugin.settings.comboBoxWidthRatio.textBox);
-          $unitDropDown.css('width', plugin.settings.comboBoxWidthRatio.comboBox);
-
-          $element.find('.dropdown-menu a').filter(function (ele, option) {           
-            return $(option).data('id') == plugin.settings.unit;
-          }).addClass("selected");
-
-
-          plugin.settings.unit = selectedUnitId;
-          comboBoxEventHandler();
-          textBoxEventHandler();
-          plugin.update({});
-          plugin.settings.SIValue = plugin.getSIValue({});
-          if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-
-            callbackData.unit = plugin.settings.unit;
-            callbackData.SIValue = plugin.settings.SIValue;
-            plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-          }
+          $inputLabel.css('width', plugin.settings.comboBoxWidthRatio.textBox);
+          $unitLabel.css('width', plugin.settings.comboBoxWidthRatio.comboBox);
+         
         }
       } catch (errorMessage) {
         console.log('Error : ' + errorMessage);
       }
-    };
-
-    var createComboBox_2 = function (unitType) {
-
-      var callbackData = {};
-      try {
-        if (typeof COSMATT.UNITCONVERTER === 'object' && unitType != '') {
-          var dropDownOptions = COSMATT.UNITCONVERTER.getunitsAndIds(unitType);
-          //var UNITSI = COSMATT.UNITCONVERTER.getSIUnit(unitType);
-
-          var $unitWrapper = $('<div class="cosmatt-unitComboBox"></div>');
-          $element.append($unitWrapper);
-          var textBoxType = 'text';
-          var step = '';
-          if (plugin.settings.mode == 'spin') {
-            textBoxType = 'number';
-            step = plugin.settings.step;
-            // disabled temporarily
-            numberFormatter = null;
-          }
-
-          var $textBoxControl = $('<input type ="' + textBoxType + '" value="" class="form-control amount_' + plugin.settings.unitType + ' unitTextBox" step="' + plugin.settings.step + '"></input>');
-          $unitWrapper.append($textBoxControl);
-          plugin.setTextBoxValue(plugin.settings.value);
-          if (plugin.settings.max != undefined) {
-            $textBoxControl.attr('max', plugin.settings.max);
-          }
-          else {
-            $textBoxControl.attr('max', '9999999999');
-          }
-          if (plugin.settings.min != undefined) {
-            $textBoxControl.attr('min', plugin.settings.min);
-          }
-          else {
-            $textBoxControl.attr('min', '0');
-          }
-
-          for (var loop1 = 0; loop1 < dropDownOptions.length; loop1++) {
-            if (plugin.settings.unit == dropDownOptions[loop1].id) {
-              var selectedUnit = dropDownOptions[loop1].name;
-            }
-          }
-          var $unitDropDown = $('<select id="comboBox' + plugin.settings.unitType + '" class="form-control unitComboBox"></select');
-          $unitWrapper.append($unitDropDown);
-
-          $textBoxControl.css('width', plugin.settings.comboBoxWidthRatio.textBox);
-          $unitDropDown.css('width', plugin.settings.comboBoxWidthRatio.comboBox);
-
-
-          for (var loop = 0; loop < dropDownOptions.length; loop++) {
-            var option = $('<option value="' + dropDownOptions[loop].name + '">' + dropDownOptions[loop].name + '</option>');
-            option.data('id', dropDownOptions[loop].id);
-            $unitDropDown.append(option);
-
-          }
-
-
-          //$element.find('select option[value="' + plugin.settings.unit + '"]').attr("selected", true);
-          //$element.find(".unitComboBox").find('option').eq(plugin.settings.unit).attr("selected", true);
-
-          $element.find('select option').filter(function (ele, option) {
-            return $(option).data('id') == plugin.settings.unit;
-          }).attr("selected", true);
-
-          plugin.settings.unit = $element.find('#comboBox' + plugin.settings.unitType + ' :selected').data('id');
-          comboBoxEventHandler();
-          textBoxEventHandler();
-          plugin.update({});
-          plugin.settings.SIValue = plugin.getSIValue({});
-
-
-          if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-
-            callbackData.unitName = plugin.settings.unit;
-            callbackData.SIValue = plugin.settings.SIValue;
-            plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-          }
-
-        }
-      } catch (errorMessage) {
-        console.log('Error : ' + errorMessage);
-      }
-    };
-    /** Combo box event handler **/
-
-    var comboBoxEventHandler = function () {
-      var textboxValue = 0;
-      var callbackData = {};
-
-      $element.find('.dropdown-menu a').bind("mousedown",function(event){
-       
-          textboxValue = plugin.settings.value;        
-
-          if (textboxValue === '') {
-            plugin.setTextBoxValue(textboxValue);
-            plugin.settings.unit = $(this).data('id');
-            return;
-          }
-
-          if (plugin.settings.showComboBoxOnly == 'true') {
-            var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, 1, plugin.settings.unit, $(this).data('id'));
-          } else {
-          var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, textboxValue, plugin.settings.unit, $(this).data('id'));
-          }
-
-          conversionfactor = COSMATT.UNITCONVERTER.getConversionFactor(plugin.settings.unitType, plugin.settings.value);
-          plugin.settings.unit = $(this).data('id');
-          
-          $element.find('button.boxSelectedVal').text($(this).text());
-          plugin.setTextBoxValue(convertedVal);
-
-          if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-            // callbackData.conversionfactor = conversionfactor;
-
-            callbackData.unit = plugin.settings.unit;
-            callbackData.value = plugin.settings.value;
-            callbackData.SIValue = plugin.getSIValue({});
-            callbackData.type = "dropdown";
-            plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-          }
-      });
-
-    }
-    var comboBoxEventHandler_2 = function () {
-      var textboxValue = 0;
-      var callbackData = {};
-
-      $element.find(".unitComboBox").on('change', function (event) {
-        // textboxValue = $element.find(".amount_" + plugin.settings.unitType).val();
-
-
-        textboxValue = plugin.settings.value;
-        if (textboxValue === '') {
-          plugin.setTextBoxValue(textboxValue);
-          plugin.settings.unit = $element.find(":selected").data('id');
-          return;
-        }
-
-        if (plugin.settings.showComboBoxOnly == 'true') {
-          var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, 1, plugin.settings.unit, $element.find(":selected").data('id'));
-        } else {
-          var convertedVal = COSMATT.UNITCONVERTER.getUnitConvertedValue(plugin.settings.unitType, textboxValue, plugin.settings.unit, $element.find(":selected").data('id'));
-        }
-
-        conversionfactor = COSMATT.UNITCONVERTER.getConversionFactor(plugin.settings.unitType, plugin.settings.value);
-
-        plugin.settings.unit = $element.find(":selected").data('id');
-        //$(this).attr('title',$(this).val());
-        plugin.setTextBoxValue(convertedVal);
-
-        if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-          // callbackData.conversionfactor = conversionfactor;
-          callbackData.unit = plugin.settings.unit;
-          callbackData.value = plugin.settings.value;
-          callbackData.SIValue = plugin.getSIValue({});
-          callbackData.type = "dropdown";
-          plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-        }
-
-      });
-    };
-    /** Text box event handler **/
-
-    var textBoxEventHandler = function () {
-
-     $element.find(".unitTextBox input").on('focus', function () {
-     
-        $(this).val(plugin.settings.value)
-      });
-      $element.find(".unitTextBox input").on('blur', function () {
-       
-        plugin.setTextBoxValue(plugin.settings.value);
-      });   
-      $element.find(".unitTextBox input.input-control").on('input', function () {
-         
-        var self = this;
-        plugin.settings.value = $(self).val();
-        var $pluginObj = $element
-        var callbackData = {};
-
-        if (timerId > 0) {
-          clearTimeout(timerId);
-        }
-
-        timerId = setTimeout((function () {
-          //plugin.setTextBoxValue($(self).val());
-
-         // if (parseInt(plugin.settings.value) <= parseInt($(self).attr('max')) && parseInt(plugin.settings.value) >= parseInt($(self).attr('min'))) {
-            if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-
-              callbackData.value = plugin.settings.value;
-              callbackData.unit = plugin.settings.unit;
-              callbackData.type = "textbox";
-              callbackData.SIValue = plugin.getSIValue();
-
-              plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-            }
-         // }
-        }), 800);
-
-
-      });
-      if(plugin.settings.mode == 'spin'){
-          $element.find(".unitComboBoxGrp").spinner('changing',function(e, newVal, oldVal){  
-
-        
-          var self = this;
-          plugin.settings.value = newVal;
-          var $pluginObj = $element
-          var callbackData = {};
-         
-            //if (parseInt(plugin.settings.value) <= parseInt($(self).attr('max')) && parseInt(plugin.settings.value) >= parseInt($(self).attr('min'))) {
-              
-              if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function
-                callbackData.value = plugin.settings.value;
-                callbackData.unit = plugin.settings.unit;
-                callbackData.type = "textbox";
-                callbackData.SIValue = plugin.getSIValue();
-
-                plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-              }
-            //}
-        });
-
-      }
-
-
-    };
-    var textBoxEventHandler_2 = function () {
-      $element.find(".unitTextBox").on('focus', function () {
-        $(this).val(plugin.settings.value)
-      });
-      $element.find(".unitTextBox").on('blur', function () {
-        plugin.setTextBoxValue(plugin.settings.value);
-      });
-      $element.find(".unitTextBox").on('input', function () {
-        var self = this;
-        plugin.settings.value = $(self).val();
-        var $pluginObj = $element
-        var callbackData = {};
-
-        if (timerId > 0) {
-          clearTimeout(timerId);
-        }
-
-        timerId = setTimeout((function () {
-          //plugin.setTextBoxValue($(self).val());
-
-          if (parseInt(plugin.settings.value) <= parseInt($(self).attr('max')) && parseInt(plugin.settings.value) >= parseInt($(self).attr('min'))) {
-            if (typeof plugin.settings.callBackFn == 'function') { // make sure the callback is a function    
-
-              callbackData.value = plugin.settings.value;
-              callbackData.unit = plugin.settings.unit;
-              callbackData.type = "textbox";
-              callbackData.SIValue = plugin.getSIValue();
-
-              plugin.settings.callBackFn.call(callbackData); // brings the scope to the callback
-            }
-          }
-        }), 800);
-
-
-      });
-
-    };
-
+    }; 
+   
+  
     // call the "constructor" method
     plugin.init();
     $(this).data('unitsComboBox', plugin);
   }
 
 })(jQuery);
-/*!
- * jquery.spinner v0.2.1 (https://vsn4ik.github.io/jquery.spinner/)
- * Copyright 2013-2017 xixilive
- * Licensed under the MIT license
- */
-'use strict';
-
-(function(factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module
-    define(['jquery'], factory);
-  }
-  else if (typeof exports === 'object') {
-    // Node/CommonJS
-    module.exports = factory(require('jquery'));
-  }
-  else {
-    // Browser globals
-    factory(jQuery);
-  }
-})(function($) {
-  var spinningTimer;
-  var Spinner;
-  var Spinning = function($element, options) {
-    this.$el = $element;
-    this.options = $.extend({}, Spinning.rules.defaults, Spinning.rules[options.rule] || {}, options);
-    this.min = Number(this.options.min) || 0;
-    this.max = Number(this.options.max) || 0;
-
-    this.$el.on({
-      'focus.spinner': $.proxy(function(e) {
-        e.preventDefault();
-        $(document).trigger('mouseup.spinner');
-        this.oldValue = this.value();
-      }, this),
-      'change.spinner': $.proxy(function(e) {
-        e.preventDefault();
-        this.value(this.$el.val());
-      }, this),
-      'keydown.spinner': $.proxy(function(e) {
-        var dir = {
-          38: 'up',
-          40: 'down'
-        }[e.which];
-
-        if (dir) {
-          e.preventDefault();
-          this.spin(dir);
-        }
-      }, this)
-    });
-
-    //init input value
-    this.oldValue = this.value();
-    this.value(this.$el.val());
-    return this;
-  };
-
-  Spinning.rules = {
-    defaults: { min: null, max: null, step: 1, precision: 0 },
-    currency: { min: 0.00, max: null, step: 0.01, precision: 2 },
-    quantity: { min: 1, max: 999, step: 1, precision: 0 },
-    percent:  { min: 1, max: 100, step: 1, precision: 0 },
-    month:    { min: 1, max: 12, step: 1, precision: 0 },
-    day:      { min: 1, max: 31, step: 1, precision: 0 },
-    hour:     { min: 0, max: 23, step: 1, precision: 0 },
-    minute:   { min: 1, max: 59, step: 1, precision: 0 },
-    second:   { min: 1, max: 59, step: 1, precision: 0 }
-  };
-
-  Spinning.prototype = {
-    spin: function(dir) {
-      if (this.$el.prop('disabled')) {
-        return;
-      }
-
-      this.oldValue = this.value();
-      var step = $.isFunction(this.options.step) ? this.options.step.call(this, dir) : this.options.step;
-      var multipler = dir === 'up' ? 1 : -1;
-
-      this.value(this.oldValue + Number(step) * multipler);
-    },
-
-    value: function(v) {
-      if (v === null || v === undefined) {
-        return this.numeric(this.$el.val());
-      }
-      v = this.numeric(v);
-
-      var valid = this.validate(v);
-      if (valid !== 0) {
-        v = (valid === -1) ? this.min : this.max;
-      }
-      //this.$el.val(v.toFixed(this.options.precision));
-      this.$el.val(v);
-
-      if (this.oldValue !== this.value()) {
-        // changing.spinner
-        this.$el.trigger('changing.spinner', [this.value(), this.oldValue]);
-
-        // lazy changed.spinner
-        clearTimeout(spinningTimer);
-        spinningTimer = setTimeout($.proxy(function() {
-          this.$el.trigger('changed.spinner', [this.value(), this.oldValue]);
-        }, this), Spinner.delay);
-      }
-    },
-
-    numeric: function(v) {
-      v = this.options.precision > 0 ? parseFloat(v, 10) : parseInt(v, 10);
-
-      // If the variable is a number
-      if (isFinite(v)) {
-        return v;
-      }
-
-      return v || this.options.min || 0;
-    },
-
-    validate: function(val) {
-      if (this.options.min !== null && val < this.min) {
-        return -1;
-      }
-
-      if (this.options.max !== null && val > this.max) {
-        return 1;
-      }
-
-      return 0;
-    }
-  };
-
-  Spinner = function(element, options) {
-    this.$el = $(element);
-    this.$spinning = this.$el.find('[data-spin="spinner"]');
-
-    if (this.$spinning.length === 0) {
-      this.$spinning = this.$el.find(':input[type="text"]');
-    }
-
-    options = $.extend({}, options, this.$spinning.data());
-
-    this.spinning = new Spinning(this.$spinning, options);
-
-    this.$el
-      .on('click.spinner', '[data-spin="up"], [data-spin="down"]', $.proxy(this, 'spin'))
-      .on('mousedown.spinner', '[data-spin="up"], [data-spin="down"]', $.proxy(this, 'spin'));
-
-    $(document).on('mouseup.spinner', $.proxy(function() {
-      clearTimeout(this.spinTimeout);
-      clearInterval(this.spinInterval);
-    }, this));
-
-    if (options.delay) {
-      this.delay(options.delay);
-    }
-
-    if (options.changed) {
-      this.changed(options.changed);
-    }
-
-    if (options.changing) {
-      this.changing(options.changing);
-    }
-  };
-
-  Spinner.delay = 500;
-
-  Spinner.prototype = {
-    constructor: Spinner,
-
-    spin: function(e) {
-      var dir = $(e.currentTarget).data('spin');
-
-      switch (e.type) {
-        case 'click':
-          e.preventDefault();
-          this.spinning.spin(dir);
-          break;
-        case 'mousedown':
-          if (e.which === 1) {
-            this.spinTimeout = setTimeout($.proxy(this, 'beginSpin', dir), 300);
-          }
-          break;
-      }
-    },
-
-    delay: function(ms) {
-      var delay = Number(ms);
-
-      if (delay >= 0) {
-        this.constructor.delay = delay + 100;
-      }
-    },
-
-    value: function() {
-      return this.spinning.value();
-    },
-
-    changed: function(fn) {
-      this.bindHandler('changed.spinner', fn);
-    },
-
-    changing: function(fn) {
-      this.bindHandler('changing.spinner', fn);
-    },
-
-    bindHandler: function(t, fn) {
-      if ($.isFunction(fn)) {
-        this.$spinning.on(t, fn);
-      }
-      else {
-        this.$spinning.off(t);
-      }
-    },
-
-    beginSpin: function(dir) {
-      this.spinInterval = setInterval($.proxy(this.spinning, 'spin', dir), 100);
-    }
-  };
-
-  var old = $.fn.spinner;
-
-  $.fn.spinner = function(options, value) {
-    return this.each(function() {
-      var data = $.data(this, 'spinner');
-
-      if (!data) {
-        data = new Spinner(this, options);
-
-        $.data(this, 'spinner', data);
-      }
-      if (options === 'delay' || options === 'changed' || options === 'changing') {
-        data[options](value);
-      }
-      else if (options === 'step' && value) {
-        data.spinning.step = value;
-      }
-      else if (options === 'spin' && value) {
-        data.spinning.spin(value);
-      }
-    });
-  };
-
-  $.fn.spinner.Constructor = Spinner;
-  $.fn.spinner.noConflict = function() {
-    $.fn.spinner = old;
-    return this;
-  };
-
-  $(function() {
-    $('[data-trigger="spinner"]').spinner();
-  });
-
-  return $.fn.spinner;
-});
